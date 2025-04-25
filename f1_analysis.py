@@ -200,7 +200,7 @@ def plot_best_laps(session):
     ax.set_title("Best Lap Time Per Team")
     ax.invert_yaxis()
     ax.grid(True, linestyle="--", alpha=0.5)
-    ax.suptitle(
+    ax.subtitle(
         f"{session.event['EventName']} {session.event.year} {session.name}\n"
         f"Fastest Lap: {best_driver} {formatted_time}\n",
         fontsize=10,
