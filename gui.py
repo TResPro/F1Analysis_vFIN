@@ -1,9 +1,9 @@
 import streamlit as st
 import f1_analysis
-from f1_analysis import TEAM_COLORS
 
 # Load session from inputs
 def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
+    from f1_analysis import TEAM_COLORS
     if not driver1 or not driver2:
         st.error("Please enter both driver names.")
         return
