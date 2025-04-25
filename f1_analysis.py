@@ -197,10 +197,9 @@ def plot_best_laps(session):
     ax.barh(teams, delta_time, color=colors)
     ax.set_xlabel("Delta Time (s)")
     ax.set_ylabel("Team")
-    ax.set_title("Best Lap Time Per Team")
     ax.invert_yaxis()
     ax.grid(True, linestyle="--", alpha=0.5)
-    ax.subtitle(
+    ax.set_title(f"Best Lap Time Per Team\n"
         f"{session.event['EventName']} {session.event.year} {session.name}\n"
         f"Fastest Lap: {best_driver} {formatted_time}\n",
         fontsize=10,
