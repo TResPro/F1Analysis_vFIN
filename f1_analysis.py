@@ -1,7 +1,6 @@
 import fastf1
 import fastf1.plotting
 import matplotlib
-matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.ticker import MultipleLocator
