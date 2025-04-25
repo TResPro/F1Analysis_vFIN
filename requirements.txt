@@ -1,0 +1,7 @@
+fastf1
+matplotlib
+numpy
+seaborn
+scipy
+customtkinter
+Pillow
