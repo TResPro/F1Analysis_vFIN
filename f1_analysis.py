@@ -120,9 +120,6 @@ def plot_stint_comparison(session, drivers, team_colors):
     return fig
 
 # Plot 2: Lap time distribution
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 def plot_lap_time_distribution(session, team_colors):
     plt.style.use("dark_background")
     
@@ -162,14 +159,10 @@ def plot_lap_time_distribution(session, team_colors):
     ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n"
                  f"Lap Time Distribution")
     ax.grid(True, linestyle="--", alpha=0.5)
-
-    # Remove the xlabel
     ax.set(xlabel=None)
-    
-    # Apply tight layout
     plt.tight_layout()
     
-    return fig  # Return the figure object
+    return fig 
 
 
 '''--------------------------------------------------------------------'''
@@ -194,24 +187,27 @@ def plot_best_laps(session):
     total_seconds = best_lap_time.total_seconds()
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
 
-    plt.figure(figsize=(10, 6), dpi=100) 
+    # Create figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
 
     # Use team colors
     colors = [TEAM_COLORS.get(team, "gray") for team in teams]
 
-    plt.barh(teams, delta_time, color=colors)
-    plt.xlabel("Delta Time (s)")
-    plt.ylabel("Team")
-    plt.title("Best Lap Time Per Team")
-    plt.gca().invert_yaxis()
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.suptitle(
+    # Create horizontal bar plot
+    ax.barh(teams, delta_time, color=colors)
+    ax.set_xlabel("Delta Time (s)")
+    ax.set_ylabel("Team")
+    ax.set_title("Best Lap Time Per Team")
+    ax.invert_yaxis()
+    ax.grid(True, linestyle="--", alpha=0.5)
+    ax.suptitle(
         f"{session.event['EventName']} {session.event.year} {session.name}\n"
         f"Fastest Lap: {best_driver} {formatted_time}\n",
         fontsize=10,
         color="lightgray"
     )
-    plt.show()
+
+    return fig
 
 # Plot 2: Lap Time Comparison
 def plot_lap_comparison(session, driver1, driver2):
@@ -234,7 +230,7 @@ def plot_lap_comparison(session, driver1, driver2):
         total_seconds = timedelta.total_seconds()
         minutes = int(total_seconds // 60)
         seconds = int(total_seconds % 60)
-        millis = int((total_seconds - minutes*60 - seconds) * 1000)
+        millis = int((total_seconds - minutes * 60 - seconds) * 1000)
         return f"{minutes}:{seconds:02}.{millis:03}"
 
     lap_time1 = lapdata1["LapTime"]
@@ -243,6 +239,7 @@ def plot_lap_comparison(session, driver1, driver2):
     formatted_time1 = format_time(lap_time1)
     formatted_time2 = format_time(lap_time2)
 
+    # Create figure and axes
     fig, axs = plt.subplots(3, 1, figsize=(12, 10), dpi=100)
 
     # Speed comparison
@@ -279,12 +276,12 @@ def plot_lap_comparison(session, driver1, driver2):
 
     time_gap = lap1_time_common - lap2_time_common
 
-    axs[2].plot(common_progress*100, time_gap, color="white")
+    axs[2].plot(common_progress * 100, time_gap, color="white")
     axs[2].set_ylabel(f"{driver1} vs {driver2}")
     axs[2].axhline(0, color="gray", linestyle="--", alpha=0.7)
     axs[2].grid(True, linestyle="--", alpha=0.5)
 
-    plt.xlabel("Distance (m)")
+    axs[2].set_xlabel("Distance (m)")
     plt.suptitle(
         f"{session.event['EventName']} {session.event.year} {session.name}\n"
         f"Lap Time Comparison: {driver1} vs {driver2}\n"
@@ -292,7 +289,8 @@ def plot_lap_comparison(session, driver1, driver2):
         fontsize=14
     )
     plt.tight_layout()
-    plt.show()
+
+    return fig
 
 # Plot 3: Maximum Speeds Compared to Best Lap Times
 def plot_max_speeds(session):
@@ -313,21 +311,25 @@ def plot_max_speeds(session):
     speeds = [max_speeds[drv].max() for drv in drivers]
     colors = [team_colors[drv] for drv in drivers] 
 
-    plt.figure(figsize=(10, 6), dpi=100)
-    plt.scatter(delta_times, speeds, color=colors, edgecolors="white", s=100) 
+    # Create figure for the plot
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
+    ax.scatter(delta_times, speeds, color=colors, edgecolors="white", s=100) 
 
+    # Annotate each point with the driver's name
     for drv, x, y, color in zip(drivers, delta_times, speeds, colors):
-        plt.text(x, y, drv, fontsize=9, color=color, ha="left", va="bottom")
+        ax.text(x, y, drv, fontsize=9, color=color, ha="left", va="bottom")
 
-    plt.xlabel("Delta Time (s)")
-    plt.ylabel("Top Speed (km/h)")
-    plt.title(f"{session.event['EventName']} {session.event.year} {session.name} - Maximum Speeds vs Best Lap Time")
-    plt.grid(True, linestyle="--", alpha=0.5)
+    ax.set_xlabel("Delta Time (s)")
+    ax.set_ylabel("Top Speed (km/h)")
+    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name} - Maximum Speeds vs Best Lap Time")
+    ax.grid(True, linestyle="--", alpha=0.5)
     plt.style.use("dark_background")
-    plt.show()
+    plt.tight_layout()
 
+    return fig
+
+# Plot 4: Track Dominance
 def plot_track_dominance(session, driver1, driver2):
-
     plt.style.use("dark_background")
     lapdata1 = session.laps.pick_drivers(driver1).pick_fastest()
     lapdata2 = session.laps.pick_drivers(driver2).pick_fastest()
@@ -395,7 +397,6 @@ def plot_track_dominance(session, driver1, driver2):
     lap_time2 = lapdata2["LapTime"].total_seconds()
     subtitle = (f"Track Dominance: {driver1} vs {driver2}\n"
                 f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}")
-               
 
     ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n{subtitle}")
 
@@ -427,7 +428,8 @@ def plot_track_dominance(session, driver1, driver2):
         spine.set_linewidth(1.5)
 
     plt.tight_layout()
-    plt.show()
+
+    return fig
 
 
 if __name__ == "__main__":
