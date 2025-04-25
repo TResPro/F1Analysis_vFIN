@@ -120,6 +120,9 @@ def plot_stint_comparison(session, drivers, team_colors):
     return fig
 
 # Plot 2: Lap time distribution
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 def plot_lap_time_distribution(session, team_colors):
     plt.style.use("dark_background")
     
@@ -137,8 +140,10 @@ def plot_lap_time_distribution(session, team_colors):
 
     team_palette = {team: team_colors.get(team, "#888888") for team in team_order}
 
+    # Create figure and axis
     fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
     
+    # Plot the boxplot
     sns.boxplot(
         data=transformed_laps,
         x="Team",
@@ -150,15 +155,22 @@ def plot_lap_time_distribution(session, team_colors):
         boxprops=dict(edgecolor="white"),
         medianprops=dict(color="grey"),
         capprops=dict(color="white"),
+        ax=ax  # Make sure the plot is drawn on the correct axis
     )
 
-    plt.title(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-              f"Lap Time Distribution")
-    plt.grid(True, linestyle="--", alpha=0.5)
+    # Titles & Labels
+    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n"
+                 f"Lap Time Distribution")
+    ax.grid(True, linestyle="--", alpha=0.5)
 
+    # Remove the xlabel
     ax.set(xlabel=None)
+    
+    # Apply tight layout
     plt.tight_layout()
-    plt.show()
+    
+    return fig  # Return the figure object
+
 
 '''--------------------------------------------------------------------'''
 
