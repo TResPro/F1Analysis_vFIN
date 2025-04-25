@@ -65,7 +65,7 @@ def load_session(mode, year, grand_prix, session_type):
 def plot_stint_comparison(session, drivers, team_colors):
 
     plt.style.use("dark_background")
-    plt.figure(figsize=(12, 6), dpi=100)
+    fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
     
     driver_positions = {}
     pit_lap_counts = defaultdict(int)  # Track how many pit stops happened on each lap
@@ -98,7 +98,7 @@ def plot_stint_comparison(session, drivers, team_colors):
             pit_exit_laps = pit_exit_laps[1:]           
         
         # Plot stint comparison
-        plt.plot(lap_numbers, lap_times, color=color, linewidth=2, label=f"{driver} P{int(final_position)}, {pit_stops} stop")
+        ax.plot(lap_numbers, lap_times, color=color, linewidth=2, label=f"{driver} P{int(final_position)}, {pit_stops} stop")
 
         # Mark pit exit laps with vertical dashed lines
         offset = 0.15  # offset to separate overlapping lines
@@ -106,17 +106,18 @@ def plot_stint_comparison(session, drivers, team_colors):
             pit_lap_counts[pit_exit] += 1  # Count pit stops on this lap
             shift = (pit_lap_counts[pit_exit] - 1) * offset  # Adjust position
             
-            plt.axvline(x=pit_exit + shift, color=color, linestyle="-.", alpha=0.8, linewidth=1)
+            ax.axvline(x=pit_exit + shift, color=color, linestyle="-.", alpha=0.8, linewidth=1)
 
     # Titles & Labels
     driver_info = " vs ".join([f"{driver} (P{int(pos)})" for driver, pos in driver_positions.items()])
-    plt.xlabel("Lap Number")
-    plt.ylabel("Lap Time (s)")
-    plt.title(f"{session.event['EventName']} {session.event.year} {session.name} - Stint Comparison \n"
-              f"{driver_info}")
-    plt.legend()
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.show()
+    ax.set_xlabel("Lap Number")
+    ax.set_ylabel("Lap Time (s)")
+    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name} - Stint Comparison \n"
+                 f"{driver_info}")
+    ax.legend()
+    ax.grid(True, linestyle="--", alpha=0.5)
+    
+    return fig
 
 # Plot 2: Lap time distribution
 def plot_lap_time_distribution(session, team_colors):
