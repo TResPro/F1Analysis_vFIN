@@ -9,22 +9,40 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
         return
 
     session = f1_analysis.load_session(mode, year, grand_prix, session_type)
-
     if session:
-        if session_type == "Qualifying":
-            f1_analysis.plot_best_laps(session)
-            f1_analysis.plot_lap_comparison(session, driver1, driver2)
-            f1_analysis.plot_track_dominance(session, driver1, driver2)
-            f1_analysis.plot_max_speeds(session)
-        elif session_type == "Race":
-            f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
-            f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
-        elif session_type in ["FP1", "FP2", "FP3"]:
-            f1_analysis.plot_best_laps(session)
-            f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
-            f1_analysis.plot_lap_comparison(session, driver1, driver2)
-            f1_analysis.plot_max_speeds(session)
+            if session_type == "Qualifying":
+                # Call the plotting functions and use st.pyplot() to render the plots
+                fig = f1_analysis.plot_best_laps(session)
+                st.pyplot(fig)
+                
+                fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
+                st.pyplot(fig)
+                
+                fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
+                st.pyplot(fig)
+                
+                fig = f1_analysis.plot_max_speeds(session)
+                st.pyplot(fig)
 
+            elif session_type == "Race":
+                fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
+                st.pyplot(fig)
+                
+                fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
+                st.pyplot(fig)
+
+            elif session_type in ["FP1", "FP2", "FP3"]:
+                fig = f1_analysis.plot_best_laps(session)
+                st.pyplot(fig)
+                
+                fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
+                st.pyplot(fig)
+                
+                fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
+                st.pyplot(fig)
+                
+                fig = f1_analysis.plot_max_speeds(session)
+                st.pyplot(fig)
 # Start Streamlit App
 def run_streamlit_app():
     st.set_page_config(page_title="F1 Telemetry Analyzer", layout="centered")
