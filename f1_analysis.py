@@ -207,18 +207,12 @@ def plot_best_laps(session):
 
     plt.suptitle(
         f"Best Lap Time Per Team\n"
+        f"{session.event['EventName']} {session.event.year} {session.name}\n"
         f"Fastest Lap: {best_driver} {formatted_time}\n",
         fontsize=14
     )
 
     plt.tight_layout()
-
-    #ax.set_title(f"Best Lap Time Per Team\n"
-        #f"{session.event['EventName']} {session.event.year} {session.name}\n"
-       # f"Fastest Lap: {best_driver} {formatted_time}\n",
-        #fontsize=10,
-       # color="lightgray"
-    #)
 
     return fig
 
@@ -335,7 +329,7 @@ def plot_max_speeds(session):
     colors = [team_colors[drv] for drv in valid_drivers]
 
     # Create figure for the plot
-    fig, ax = plt.subplots(figsize=(12, 6), dpi=1000)
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
     ax.scatter(delta_times, speeds, color=colors, edgecolors="white", s=100)
 
     # Annotate each point with the driver's name
@@ -344,7 +338,7 @@ def plot_max_speeds(session):
 
     ax.set_xlabel("Delta Time (s)")
     ax.set_ylabel("Top Speed (km/h)")
-    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name} - Maximum Speeds vs Best Lap Time")
+    plt.suptitle(f"{session.event['EventName']} {session.event.year} {session.name} - Maximum Speeds vs Best Lap Time",fontsize=14)
     ax.grid(True, linestyle="--", alpha=0.5)
     plt.style.use("dark_background")
     plt.tight_layout()
