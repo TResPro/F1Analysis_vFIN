@@ -367,9 +367,18 @@ def plot_track_dominance(session, driver1, driver2):
     lap1 = lap1[lap1['Distance'] <= max_distance]
     lap2 = lap2[lap2['Distance'] <= max_distance]
 
-    # Compare Laptimes correctly
-    overall_fastest_driver = driver1 if lapdata1['LapTime'] < lapdata2['LapTime'] else driver2
-    overall_fastest_color = color_driver1 if overall_fastest_driver == driver1 else color_driver2
+    # Interpolate to a common distance grid
+    distance_grid = np.linspace(0, max_distance, 1000)
+
+    def interpolate_lap(lap):
+        interp = {}
+        for col in ['X', 'Y', 'Speed']:
+            f = interp1d(lap['Distance'], lap[col], kind='linear', fill_value="extrapolate")
+            interp[col] = f(distance_grid)
+        return interp
+
+    lap1_interp = interpolate_lap(lap1)
+    lap2_interp = interpolate_lap(lap2)
 
     # Define subsectors
     n_sectors = 25
@@ -384,38 +393,24 @@ def plot_track_dominance(session, driver1, driver2):
         d_min = sector_bounds[i]
         d_max = sector_bounds[i+1]
 
-        sector1 = lap1[(lap1['Distance'] >= d_min) & (lap1['Distance'] < d_max)]
-        sector2 = lap2[(lap2['Distance'] >= d_min) & (lap2['Distance'] < d_max)]
+        mask = (distance_grid >= d_min) & (distance_grid < d_max)
 
-        avg_speed1 = sector1['Speed'].mean()
-        avg_speed2 = sector2['Speed'].mean()
+        if not np.any(mask):
+            continue  # No points, skip
+
+        avg_speed1 = np.nanmean(lap1_interp['Speed'][mask])
+        avg_speed2 = np.nanmean(lap2_interp['Speed'][mask])
+
+        if np.isnan(avg_speed1) or np.isnan(avg_speed2):
+            continue  # Skip sector if no valid data
 
         faster_driver = driver1 if avg_speed1 > avg_speed2 else driver2
         color = color_driver1 if faster_driver == driver1 else color_driver2
 
-        if faster_driver == driver1:
-            x = sector1['X'].values
-            y = sector1['Y'].values
-        else:
-            x = sector2['X'].values
-            y = sector2['Y'].values
+        x = lap1_interp['X'][mask] if faster_driver == driver1 else lap2_interp['X'][mask]
+        y = lap1_interp['Y'][mask] if faster_driver == driver1 else lap2_interp['Y'][mask]
 
-        if len(x) > 1:
-            # Normal plotting with winner color
-            ax_track.plot(x, y, color=color, linewidth=2)
-        else:
-            # Try fallback: use any available data (driver1 or driver2)
-            if len(sector1) > 1:
-                x = sector1['X'].values
-                y = sector1['Y'].values
-                ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
-            elif len(sector2) > 1:
-                x = sector2['X'].values
-                y = sector2['Y'].values
-                ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
-            else:
-                # No points available for this mini-sector: skip it
-                continue
+        ax_track.plot(x, y, color=color, linewidth=2)
 
     # Start marker
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
