@@ -10,6 +10,7 @@ import gui
 import seaborn as sns
 from collections import defaultdict
 from scipy.interpolate import interp1d
+import streamlit as st
 
 # Define team colors
 TEAM_COLORS = {
@@ -310,7 +311,7 @@ def plot_max_speeds(session):
         if fastest_lap is not None:
             best_laps[driver] = fastest_lap["LapTime"]
         else:
-            print(f"No valid fastest lap for {driver}")
+            st.warning(f"No valid fastest lap for {driver}")
             continue  
 
         team = laps.iloc[0]["Team"]
