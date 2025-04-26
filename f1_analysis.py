@@ -396,7 +396,17 @@ def plot_track_dominance(session, driver1, driver2):
         mask = (distance_grid >= d_min) & (distance_grid < d_max)
 
         if not np.any(mask):
-            continue  # No points, skip
+            mid_distance = (d_min + d_max) / 2
+            closest_idx = (np.abs(distance_grid - mid_distance)).argmin()
+            
+            x = lap1_interp['X'][closest_idx]
+            y = lap1_interp['Y'][closest_idx]
+            
+            faster_driver = driver1 if lap1_interp['Speed'][closest_idx] > lap2_interp['Speed'][closest_idx] else driver2
+            color = color_driver1 if faster_driver == driver1 else color_driver2
+
+            ax_track.plot(x, y, marker='o', color=color, markersize=2)
+            continue
 
         avg_speed1 = np.nanmean(lap1_interp['Speed'][mask])
         avg_speed2 = np.nanmean(lap2_interp['Speed'][mask])
