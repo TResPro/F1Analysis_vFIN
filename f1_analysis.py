@@ -376,28 +376,37 @@ def plot_track_dominance(session, driver1, driver2):
     ax_track = fig.add_subplot(spec[0])
     ax_legend = fig.add_subplot(spec[1])
 
+    # Both laps: build interpolation functions
+    interp1_x = interp1d(lap1['Distance'], lap1['X'], bounds_error=False, fill_value="extrapolate")
+    interp1_y = interp1d(lap1['Distance'], lap1['Y'], bounds_error=False, fill_value="extrapolate")
+
+    interp2_x = interp1d(lap2['Distance'], lap2['X'], bounds_error=False, fill_value="extrapolate")
+    interp2_y = interp1d(lap2['Distance'], lap2['Y'], bounds_error=False, fill_value="extrapolate")
+
     for i in range(n_sectors):
         d_min = sector_bounds[i]
         d_max = sector_bounds[i+1]
+        d_mid = (d_min + d_max) / 2
 
-        # Driver 1
+        # Average speed in sector
         sector1 = lap1[(lap1['Distance'] >= d_min) & (lap1['Distance'] < d_max)]
-        avg_speed1 = sector1['Speed'].mean()
-
-        # Driver 2
         sector2 = lap2[(lap2['Distance'] >= d_min) & (lap2['Distance'] < d_max)]
-        avg_speed2 = sector2['Speed'].mean()
 
-        # Choose who is faster
+        avg_speed1 = sector1['Speed'].mean() if not sector1.empty else 0
+        avg_speed2 = sector2['Speed'].mean() if not sector2.empty else 0
+
         faster_driver = driver1 if avg_speed1 > avg_speed2 else driver2
         color = color_driver1 if faster_driver == driver1 else color_driver2
 
-        # X, Y for plotting
-        x = sector1['X'].values if faster_driver == driver1 else sector2['X'].values
-        y = sector1['Y'].values if faster_driver == driver1 else sector2['Y'].values
+        # Interpolated points for plotting
+        x_start = interp1_x(d_min) if faster_driver == driver1 else interp2_x(d_min)
+        y_start = interp1_y(d_min) if faster_driver == driver1 else interp2_y(d_min)
 
-        if len(x) > 1:  # Only plot if there are enough points
-            ax_track.plot(x, y, color=color, linewidth=2)
+        x_end = interp1_x(d_max) if faster_driver == driver1 else interp2_x(d_max)
+        y_end = interp1_y(d_max) if faster_driver == driver1 else interp2_y(d_max)
+
+        # Draw segment
+        ax_track.plot([x_start, x_end], [y_start, y_end], color=color, linewidth=2)
 
     # Start marker
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
