@@ -65,14 +65,12 @@ def run_streamlit_app():
             - Select the **year**, **Grand Prix**, and **session**.
             - Enter **driver codes** (e.g., 'VER', 'LEC', 'NOR').
             - Press **Load Session** to see telemetry comparisons.
-            - You can change the background theme by clicking on the three dotted point in the top-right corner
+            - You can change the **background theme** by clicking on the three dotted point in the top-right corner
             """,
             icon="🛠️"
         )
         st.markdown("---")
-        st.caption("Made with passion for F1 fans.")
-        st.write("")
-        st.caption("To Contact Me: formulatelemetryinfo@gmail.com")
+        st.caption("Made with passion for F1 fans.\nContact Me: formulatelemetryinfo@gmail.com")
 
     # Main title
     st.title("🏎️ F1 Telemetry Analyzer")
