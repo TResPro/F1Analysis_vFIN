@@ -368,7 +368,7 @@ def plot_track_dominance(session, driver1, driver2):
     lap2 = lap2[lap2['Distance'] <= max_distance]
 
     # Define subsectors
-    n_sectors = 25
+    n_sectors = 50
     sector_bounds = np.linspace(0, max_distance, n_sectors + 1)
 
     fig = plt.figure(figsize=(16, 9), dpi=300)
