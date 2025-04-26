@@ -420,24 +420,37 @@ def plot_track_dominance(session, driver1, driver2):
         spine.set_color('white')
         spine.set_linewidth(1.5)
 
-    # Legend
-    ax_legend.axis('off')
+    # Legend Plot
+    ax_legend.axis('off')  # Hide axis
+    lap_time1 = lapdata1["LapTime"].total_seconds()
+    lap_time2 = lapdata2["LapTime"].total_seconds()
+
+    def format_time(t):
+        minutes = int(t // 60)
+        seconds = int(t % 60)
+        millis = int((t - int(t)) * 1000)
+        return f"{minutes}:{seconds:02}.{millis:03}"
+
     legend_elements = [
-        Patch(facecolor=color_driver1, label=f"{driver1}"),
-        Patch(facecolor=color_driver2, label=f"{driver2}"),
+        Patch(facecolor=color_driver1, label=f"{driver1}\nS1: {lapdata1['Sector1Time'].total_seconds():.3f}s\nS2: {lapdata1['Sector2Time'].total_seconds():.3f}s\nS3: {lapdata1['Sector3Time'].total_seconds():.3f}s"),
+        Patch(facecolor=color_driver2, label=f"{driver2}\nS1: {lapdata2['Sector1Time'].total_seconds():.3f}s\nS2: {lapdata2['Sector2Time'].total_seconds():.3f}s\nS3: {lapdata2['Sector3Time'].total_seconds():.3f}s"),
     ]
+
     ax_legend.legend(
         handles=legend_elements,
         loc='center',
-        fontsize=12,
+        title="Sector Times",
+        fontsize=10,
+        title_fontsize=11,
         framealpha=0.95,
         borderpad=1.2,
         labelspacing=1.2
     )
 
     fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                 f"Track Dominance by Highest Avg Speed in Subsector\n"
-                 f"{driver1} vs {driver2}", fontsize=14)
+                 f"Track Dominance: {driver1} vs {driver2}\n"
+                 f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
+                 fontsize=14)
 
     plt.tight_layout()
     return fig
