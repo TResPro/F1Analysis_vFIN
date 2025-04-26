@@ -301,22 +301,32 @@ def plot_max_speeds(session):
 
     for driver in drivers:
         laps = session.laps.pick_drivers(driver)
-        max_speeds[driver] = laps["SpeedST"]
-        best_laps[driver] = laps.pick_fastest()["LapTime"]
+        if laps.empty:
+            continue  # Skip drivers with no laps
         
+        max_speeds[driver] = laps["SpeedST"]
+        
+        fastest_lap = laps.pick_fastest()
+        if fastest_lap is not None:
+            best_laps[driver] = fastest_lap["LapTime"]
+        else:
+            print(f"No valid fastest lap for {driver}")
+            continue  
+
         team = laps.iloc[0]["Team"]
         team_colors[driver] = TEAM_COLORS.get(team, "gray")
 
-    delta_times = [(best_laps[drv] - min(best_laps.values())).total_seconds() for drv in drivers]
-    speeds = [max_speeds[drv].max() for drv in drivers]
-    colors = [team_colors[drv] for drv in drivers] 
+    valid_drivers = list(best_laps.keys())
+    delta_times = [(best_laps[drv] - min(best_laps.values())).total_seconds() for drv in valid_drivers]
+    speeds = [max_speeds[drv].max() for drv in valid_drivers]
+    colors = [team_colors[drv] for drv in valid_drivers]
 
     # Create figure for the plot
-    fig, ax = plt.subplots(figsize=(20, 12), dpi=1000)
-    ax.scatter(delta_times, speeds, color=colors, edgecolors="white", s=100) 
+    fig, ax = plt.subplots(figsize=(20, 12), dpi=300)
+    ax.scatter(delta_times, speeds, color=colors, edgecolors="white", s=100)
 
     # Annotate each point with the driver's name
-    for drv, x, y, color in zip(drivers, delta_times, speeds, colors):
+    for drv, x, y, color in zip(valid_drivers, delta_times, speeds, colors):
         ax.text(x, y, drv, fontsize=9, color=color, ha="left", va="bottom")
 
     ax.set_xlabel("Delta Time (s)")
