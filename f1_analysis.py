@@ -189,7 +189,7 @@ def plot_best_laps(session):
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
 
     # Create figure and axis
-    fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=1000)
 
     # Use team colors
     colors = [TEAM_COLORS.get(team, "gray") for team in teams]
