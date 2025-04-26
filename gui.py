@@ -70,7 +70,7 @@ def run_streamlit_app():
             icon="🛠️"
         )
         st.markdown("---")
-        st.caption("Made with passion for F1 fans.\nContact Me: formulatelemetryinfo@gmail.com")
+        st.caption("Made with passion for F1 fans.\n        Contact Me: formulatelemetryinfo@gmail.com")
 
     # Main title
     st.title("🏎️ F1 Telemetry Analyzer")
