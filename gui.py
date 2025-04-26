@@ -71,6 +71,7 @@ def run_streamlit_app():
         )
         st.markdown("---")
         st.caption("Made with passion for F1 fans.")
+        st.write("")
         st.caption("To Contact Me: formulatelemetryinfo@gmail.com")
 
     # Main title

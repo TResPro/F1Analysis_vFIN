@@ -97,8 +97,11 @@ def plot_stint_comparison(session, drivers, team_colors):
 
         # Remove first recorded lap if it's a pit exit (start from the pit lane)
         if pit_exit_laps.size > 0 and pit_exit_laps[0] == 1:
-            pit_exit_laps = pit_exit_laps[1:]           
-        
+            pit_exit_laps = pit_exit_laps[1:]  
+
+        if pit_stops > 3:
+            st.warning('A Red Flag could have been displayed, be careful about pit stop count')
+
         # Plot stint comparison
         ax.plot(lap_numbers, lap_times, color=color, linewidth=2, label=f"{driver} P{int(final_position)}, {pit_stops} stop")
 
@@ -190,7 +193,7 @@ def plot_best_laps(session):
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
 
     # Create figure and axis
-    fig, ax = plt.subplots(figsize=(12, 6), dpi=1000)
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
 
     # Use team colors
     colors = [TEAM_COLORS.get(team, "gray") for team in teams]
