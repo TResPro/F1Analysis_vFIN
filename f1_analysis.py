@@ -117,8 +117,9 @@ def plot_stint_comparison(session, drivers, team_colors):
     driver_info = " vs ".join([f"{driver} (P{int(pos)})" for driver, pos in driver_positions.items()])
     ax.set_xlabel("Lap Number")
     ax.set_ylabel("Lap Time (s)")
-    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name} - Stint Comparison \n"
-                 f"{driver_info}")
+    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n"
+                 "Stint Comparison \n"
+                 f"{driver_info}", fontsize=14)
     ax.legend()
     ax.grid(True, linestyle="--", alpha=0.5)
     
@@ -162,7 +163,7 @@ def plot_lap_time_distribution(session, team_colors):
 
     # Titles & Labels
     ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                 f"Lap Time Distribution")
+                 f"Lap Time Distribution",fontsize=14)
     ax.grid(True, linestyle="--", alpha=0.5)
     ax.set(xlabel=None)
     plt.tight_layout()
@@ -338,7 +339,8 @@ def plot_max_speeds(session):
 
     ax.set_xlabel("Delta Time (s)")
     ax.set_ylabel("Top Speed (km/h)")
-    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name} - Maximum Speeds vs Best Lap Time",fontsize=14)
+    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n" 
+                 "Maximum Speeds vs Best Lap Time",fontsize=14)
     ax.grid(True, linestyle="--", alpha=0.5)
     plt.style.use("dark_background")
     plt.tight_layout()
