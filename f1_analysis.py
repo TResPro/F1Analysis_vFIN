@@ -4,6 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.ticker import MultipleLocator
+import matplotlib.gridspec as gridspec
 import numpy as np
 import gui
 import seaborn as sns
@@ -346,12 +347,10 @@ def plot_track_dominance(session, driver1, driver2):
     lap1_time = lap1["Time"].dt.total_seconds() - lap1["Time"].dt.total_seconds().iloc[0]
     lap2_time = lap2["Time"].dt.total_seconds() - lap2["Time"].dt.total_seconds().iloc[0]
 
-    # % lap completion
     lap1_pct = lap1["Distance"] / lap1["Distance"].max()
     lap2_pct = lap2["Distance"] / lap2["Distance"].max()
     common_progress = np.linspace(0, 1, 500)
 
-    # Interpolate time
     lap1_time_interp = interp1d(lap1_pct, lap1_time, kind='linear', fill_value='extrapolate')
     lap2_time_interp = interp1d(lap2_pct, lap2_time, kind='linear', fill_value='extrapolate')
 
@@ -359,75 +358,76 @@ def plot_track_dominance(session, driver1, driver2):
     lap2_time_common = lap2_time_interp(common_progress)
     time_gap = lap1_time_common - lap2_time_common
 
-    # Interpolate positions
     x_interp = interp1d(lap1_pct, lap1["X"], kind='linear', fill_value='extrapolate')
     y_interp = interp1d(lap1_pct, lap1["Y"], kind='linear', fill_value='extrapolate')
     x_common = x_interp(common_progress)
     y_common = y_interp(common_progress)
 
-    # Begin plot
-    fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
+    # Create figure with two subplots (track and legend)
+    fig = plt.figure(figsize=(12, 6), dpi=100)
+    spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
+    ax_track = fig.add_subplot(spec[0])
+    ax_legend = fig.add_subplot(spec[1])
 
+    # Track Plot
     for i in range(len(common_progress) - 1):
         color = color_driver1 if time_gap[i] < 0 else color_driver2
-        ax.plot(x_common[i:i+2], y_common[i:i+2], color=color, linewidth=2)
+        ax_track.plot(x_common[i:i+2], y_common[i:i+2], color=color, linewidth=2)
 
-    # Mark start line
-    ax.plot(x_common[0], y_common[0], marker='.', color='white', markersize=8, zorder=10)
-    ax.text(x_common[0], y_common[0], "Start", fontsize=9, ha='left', va='bottom', color='white', zorder=11)
+    # Start marker
+    ax_track.plot(x_common[0], y_common[0], marker='.', color='white', markersize=8, zorder=10)
+    ax_track.text(x_common[0], y_common[0], "Start", fontsize=9, ha='left', va='bottom', color='white', zorder=11)
 
-    # Plot corners with their numbers
+    # Corners
     circuit_info = session.get_circuit_info()
     for _, corner in circuit_info.corners.iterrows():
         number = corner["Number"]
         x = corner["X"]
         y = corner["Y"]
-        ax.text(x, y, str(number), fontsize=8, color='black', ha='center', va='center',
-                bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2'))
+        ax_track.text(x, y, str(number), fontsize=8, color='black', ha='center', va='center',
+                      bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2'))
 
-    # Format lap times mm:ss:ms
+    # Clean Track Plot
+    ax_track.set_xticks([])
+    ax_track.set_yticks([])
+    for spine in ax_track.spines.values():
+        spine.set_visible(True)
+        spine.set_color('white')
+        spine.set_linewidth(1.5)
+
+    # Legend Plot
+    ax_legend.axis('off')  # Hide axis
+    lap_time1 = lapdata1["LapTime"].total_seconds()
+    lap_time2 = lapdata2["LapTime"].total_seconds()
+
     def format_time(t):
         minutes = int(t // 60)
         seconds = int(t % 60)
         millis = int((t - int(t)) * 1000)
         return f"{minutes}:{seconds:02}.{millis:03}"
 
-    lap_time1 = lapdata1["LapTime"].total_seconds()
-    lap_time2 = lapdata2["LapTime"].total_seconds()
-    subtitle = (f"Track Dominance: {driver1} vs {driver2}\n"
-                f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}")
-
-    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n{subtitle}")
-
     legend_elements = [
         Patch(facecolor=color_driver1, label=f"{driver1}\nS1: {lapdata1['Sector1Time'].total_seconds():.3f}s\nS2: {lapdata1['Sector2Time'].total_seconds():.3f}s\nS3: {lapdata1['Sector3Time'].total_seconds():.3f}s"),
         Patch(facecolor=color_driver2, label=f"{driver2}\nS1: {lapdata2['Sector1Time'].total_seconds():.3f}s\nS2: {lapdata2['Sector2Time'].total_seconds():.3f}s\nS3: {lapdata2['Sector3Time'].total_seconds():.3f}s"),
     ]
 
-    ax.legend(
+    ax_legend.legend(
         handles=legend_elements,
-        loc='upper right',
+        loc='center',
         title="Sector Times",
         fontsize=10,
         title_fontsize=11,
-        ncol=2,
         framealpha=0.95,
         borderpad=1.2,
         labelspacing=1.2
     )
 
-    # Turn off axis ticks and labels
-    ax.set_xticks([])
-    ax.set_yticks([])
-
-    # Make the outer box (spines) white and visible
-    for spine in ax.spines.values():
-        spine.set_visible(True)
-        spine.set_color('white')
-        spine.set_linewidth(1.5)
+    fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
+                 f"Track Dominance: {driver1} vs {driver2}\n"
+                 f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
+                 fontsize=14)
 
     plt.tight_layout()
-
     return fig
 
 
