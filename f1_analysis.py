@@ -403,8 +403,7 @@ def plot_track_dominance(session, driver1, driver2):
             # fallback: use overall fastest color even if only 0 or 1 point
             x = sector1['X'].values if not sector1.empty else sector2['X'].values
             y = sector1['Y'].values if not sector1.empty else sector2['Y'].values
-            if len(x) > 0:  # in case there is at least 1 point
-                ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
+            ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
 
     # Start marker
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
