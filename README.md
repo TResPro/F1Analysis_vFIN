@@ -11,7 +11,7 @@
 
 Have fun, and analyze the data to get a better knowing of car performances! 🏎️🔥
 
-**LINK** https://f1analysisv.streamlit.app/
+**LINK:** https://f1analysisv.streamlit.app/
 
 ![Screenshot 2025-04-09 195726](https://github.com/user-attachments/assets/09107821-9ad5-4f34-948b-98ed95cfd428)
 ![Screenshot 2025-04-09 195507](https://github.com/user-attachments/assets/d5252dd3-fb88-4614-893d-1d44a0a803d4)
