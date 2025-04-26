@@ -338,7 +338,7 @@ def plot_max_speeds(session):
 
     ax.set_xlabel("Delta Time (s)")
     ax.set_ylabel("Top Speed (km/h)")
-    plt.suptitle(f"{session.event['EventName']} {session.event.year} {session.name} - Maximum Speeds vs Best Lap Time",fontsize=14)
+    ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name} - Maximum Speeds vs Best Lap Time",fontsize=14)
     ax.grid(True, linestyle="--", alpha=0.5)
     plt.style.use("dark_background")
     plt.tight_layout()
