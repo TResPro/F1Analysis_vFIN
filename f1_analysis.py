@@ -193,7 +193,7 @@ def plot_best_laps(session):
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
 
     # Create figure and axis
-    fig, ax = plt.subplots(figsize=(14, 9), dpi=1000)
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
 
     # Use team colors
     colors = [TEAM_COLORS.get(team, "gray") for team in teams]
@@ -204,12 +204,21 @@ def plot_best_laps(session):
     ax.set_ylabel("Team")
     ax.invert_yaxis()
     ax.grid(True, linestyle="--", alpha=0.5)
-    ax.set_title(f"Best Lap Time Per Team\n"
-        f"{session.event['EventName']} {session.event.year} {session.name}\n"
+
+    plt.suptitle(
+        f"Best Lap Time Per Team\n"
         f"Fastest Lap: {best_driver} {formatted_time}\n",
-        fontsize=10,
-        color="lightgray"
+        fontsize=14
     )
+
+    plt.tight_layout()
+
+    #ax.set_title(f"Best Lap Time Per Team\n"
+        #f"{session.event['EventName']} {session.event.year} {session.name}\n"
+       # f"Fastest Lap: {best_driver} {formatted_time}\n",
+        #fontsize=10,
+       # color="lightgray"
+    #)
 
     return fig
 
