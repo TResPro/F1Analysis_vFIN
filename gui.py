@@ -19,7 +19,7 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
             fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
             st.pyplot(fig, use_container_width=True)
 
-            st.subheader('🛣️ Track Dominance')
+            st.subheader('🏁 Track Dominance')
             fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
             st.pyplot(fig, use_container_width=True)
 
@@ -65,11 +65,13 @@ def run_streamlit_app():
             - Select the **year**, **Grand Prix**, and **session**.
             - Enter **driver codes** (e.g., 'VER', 'LEC', 'NOR').
             - Press **Load Session** to see telemetry comparisons.
+            - You can change the background theme by clicking on the three dotted point in the top-right corner
             """,
             icon="🛠️"
         )
         st.markdown("---")
-        st.caption("Made with ❤️ for F1 fans.")
+        st.caption("Made with passion for F1 fans." \
+        "Contact me at formulatelemetryinfo@gmail.com")
 
     # Main title
     st.title("🏎️ F1 Telemetry Analyzer")
