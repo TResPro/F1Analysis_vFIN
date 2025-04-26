@@ -1,18 +1,14 @@
-*F1 Analysis* is a tool for analyzing F1 Telemetry Data from all the sessions using *FastF1 API*.
+*F1 Analysis* is a web app for analyzing F1 Telemetry Data from all the sessions using *FastF1 API*.
 
-🎯How to access it:
-1. **Download the folder** from GitHub
-2. Open it on your IDE (required Python 3.10 or higher)
-3. **Install dependecies** needed: navigate your folder and from terminal write  >> pip install -r requirements.txt
+🎯What you can do:
+1. Select year, Grand Prix and session
+2. Pick up two drivers to compare their performances
+3. Dive into the plots and discover hidden insights no one noticed!
 
 🪄How to use it:
-1. Ensure you're **connected to wifi**
-2. Run the Python script 'f1_analysis.py' on your IDE
-3. Once the GUI is loaded insert **Year, Grand Prix and type of session**
-4. **Insert the two drivers** you want to compare (use the first 3 letters of the surname ex. LEC,VER,HAM etc.)
-5. **Press the button** *'Load Session'*
+1. Very simple, open this link, this will make you go to streamlit where you can use the web app!
+2. If you find the app in 'sleepy mode' don't worry, it means that some modifications are in course. Log in the next days to use it!
 
-Closing the first plot, the second will appear and so on.
 Have fun, and analyze the data to get a better knowing of car performances! 🏎️🔥
 
 ![Screenshot 2025-04-09 195726](https://github.com/user-attachments/assets/09107821-9ad5-4f34-948b-98ed95cfd428)
