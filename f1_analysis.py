@@ -364,7 +364,7 @@ def plot_track_dominance(session, driver1, driver2):
     y_common = y_interp(common_progress)
 
     # Create figure with two subplots (track and legend)
-    fig = plt.figure(figsize=(20, 12), dpi=1000)
+    fig = plt.figure(figsize=(16, 9), dpi=100)
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
     ax_track = fig.add_subplot(spec[0])
     ax_legend = fig.add_subplot(spec[1])
