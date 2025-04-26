@@ -367,6 +367,10 @@ def plot_track_dominance(session, driver1, driver2):
     lap1 = lap1[lap1['Distance'] <= max_distance]
     lap2 = lap2[lap2['Distance'] <= max_distance]
 
+    # Compare Laptimes correctly
+    overall_fastest_driver = driver1 if lapdata1['LapTime'] < lapdata2['LapTime'] else driver2
+    overall_fastest_color = color_driver1 if overall_fastest_driver == driver1 else color_driver2
+
     # Define subsectors
     n_sectors = 25
     sector_bounds = np.linspace(0, max_distance, n_sectors + 1)
@@ -380,24 +384,27 @@ def plot_track_dominance(session, driver1, driver2):
         d_min = sector_bounds[i]
         d_max = sector_bounds[i+1]
 
-        # Driver 1
         sector1 = lap1[(lap1['Distance'] >= d_min) & (lap1['Distance'] < d_max)]
-        avg_speed1 = sector1['Speed'].mean()
-
-        # Driver 2
         sector2 = lap2[(lap2['Distance'] >= d_min) & (lap2['Distance'] < d_max)]
+
+        avg_speed1 = sector1['Speed'].mean()
         avg_speed2 = sector2['Speed'].mean()
 
-        # Choose who is faster
         faster_driver = driver1 if avg_speed1 > avg_speed2 else driver2
         color = color_driver1 if faster_driver == driver1 else color_driver2
 
-        # X, Y for plotting
+        # Select X, Y
         x = sector1['X'].values if faster_driver == driver1 else sector2['X'].values
         y = sector1['Y'].values if faster_driver == driver1 else sector2['Y'].values
 
-        if len(x) > 1:  # Only plot if there are enough points
+        if len(x) > 1:
             ax_track.plot(x, y, color=color, linewidth=2)
+        else:
+            # fallback: use overall fastest color even if only 0 or 1 point
+            x = sector1['X'].values if not sector1.empty else sector2['X'].values
+            y = sector1['Y'].values if not sector1.empty else sector2['Y'].values
+            if len(x) > 0:  # in case there is at least 1 point
+                ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
 
     # Start marker
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
