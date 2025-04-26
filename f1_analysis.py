@@ -366,59 +366,36 @@ def plot_track_dominance(session, driver1, driver2):
     max_distance = min(lap1['Distance'].max(), lap2['Distance'].max())
     lap1 = lap1[lap1['Distance'] <= max_distance]
     lap2 = lap2[lap2['Distance'] <= max_distance]
+    overall_fastest_driver = driver1 if lapdata1["LapTime"] < lapdata2["LapTime"] else driver2
 
-    # Interpolate to a common distance grid
-    distance_grid = np.linspace(0, max_distance, 1000)
+    # Define a dense distance grid
+    distance_grid = np.linspace(0, max_distance, 2000)
 
-    def interpolate_lap(lap):
-        interp = {}
-        for col in ['X', 'Y', 'Speed']:
-            f = interp1d(lap['Distance'], lap[col], kind='linear', fill_value="extrapolate")
-            interp[col] = f(distance_grid)
-        return interp
+    # Interpolate telemetry
+    lap1_interp = {}
+    lap2_interp = {}
+    for var in ['X', 'Y', 'Speed']:
+        interp1 = interp1d(lap1['Distance'], lap1[var], kind='linear', fill_value='extrapolate')
+        interp2 = interp1d(lap2['Distance'], lap2[var], kind='linear', fill_value='extrapolate')
+        lap1_interp[var] = interp1(distance_grid)
+        lap2_interp[var] = interp2(distance_grid)
 
-    lap1_interp = interpolate_lap(lap1)
-    lap2_interp = interpolate_lap(lap2)
-
-    # Define subsectors
-    n_sectors = 25
-    sector_bounds = np.linspace(0, max_distance, n_sectors + 1)
-
+    # Create figure
     fig = plt.figure(figsize=(16, 9), dpi=300)
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
     ax_track = fig.add_subplot(spec[0])
     ax_legend = fig.add_subplot(spec[1])
 
-    for i in range(n_sectors):
-        d_min = sector_bounds[i]
-        d_max = sector_bounds[i+1]
-
-        mask = (distance_grid >= d_min) & (distance_grid < d_max)
-
-        if not np.any(mask):
-            mid_distance = (d_min + d_max) / 2
-            closest_idx = (np.abs(distance_grid - mid_distance)).argmin()
-            
-            x = lap1_interp['X'][closest_idx]
-            y = lap1_interp['Y'][closest_idx]
-            
-            faster_driver = driver1 if lap1_interp['Speed'][closest_idx] > lap2_interp['Speed'][closest_idx] else driver2
-            color = color_driver1 if faster_driver == driver1 else color_driver2
-
-            ax_track.plot(x, y, color=color, markersize=2)
-            continue
-
-        avg_speed1 = np.nanmean(lap1_interp['Speed'][mask])
-        avg_speed2 = np.nanmean(lap2_interp['Speed'][mask])
-
-        if np.isnan(avg_speed1) or np.isnan(avg_speed2):
-            continue  # Skip sector if no valid data
+    # Plot each small segment
+    for i in range(len(distance_grid) - 1):
+        avg_speed1 = (lap1_interp['Speed'][i] + lap1_interp['Speed'][i+1]) / 2
+        avg_speed2 = (lap2_interp['Speed'][i] + lap2_interp['Speed'][i+1]) / 2
 
         faster_driver = driver1 if avg_speed1 > avg_speed2 else driver2
         color = color_driver1 if faster_driver == driver1 else color_driver2
 
-        x = lap1_interp['X'][mask] if faster_driver == driver1 else lap2_interp['X'][mask]
-        y = lap1_interp['Y'][mask] if faster_driver == driver1 else lap2_interp['Y'][mask]
+        x = [lap1_interp['X'][i], lap1_interp['X'][i+1]] if faster_driver == driver1 else [lap2_interp['X'][i], lap2_interp['X'][i+1]]
+        y = [lap1_interp['Y'][i], lap1_interp['Y'][i+1]] if faster_driver == driver1 else [lap2_interp['Y'][i], lap2_interp['Y'][i+1]]
 
         ax_track.plot(x, y, color=color, linewidth=2)
 
