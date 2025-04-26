@@ -11,36 +11,45 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
     session = f1_analysis.load_session(mode, year, grand_prix, session_type)
     if session:
             if session_type == "Qualifying":
-                st.subtitle('Best Lap Per Team')
+                st.title('Best Lap Per Team')
                 fig = f1_analysis.plot_best_laps(session)
                 st.pyplot(fig)
                 
+                st.title('Lap Time Comparison')
                 fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
                 st.pyplot(fig)
                 
+                st.title('Track Dominance')
                 fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
                 st.pyplot(fig)
                 
+                st.title('Max speeds vs Lap time')
                 fig = f1_analysis.plot_max_speeds(session)
                 st.pyplot(fig)
 
             elif session_type == "Race":
+                st.title('Stint Comparison')
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 st.pyplot(fig)
                 
+                st.title('Lap Time Distribution')
                 fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
                 st.pyplot(fig)
 
             elif session_type in ["FP1", "FP2", "FP3"]:
+                st.title('Best Lap Per Team')
                 fig = f1_analysis.plot_best_laps(session)
                 st.pyplot(fig)
                 
+                st.title('Lap Time Distribution')
                 fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
                 st.pyplot(fig)
                 
+                st.title('Lap Time Comparison')
                 fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
                 st.pyplot(fig)
                 
+                st.title('Max speeds vs Lap time')
                 fig = f1_analysis.plot_max_speeds(session)
                 st.pyplot(fig)
 # Start Streamlit App
