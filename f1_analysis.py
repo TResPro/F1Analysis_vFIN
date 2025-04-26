@@ -67,7 +67,7 @@ def load_session(mode, year, grand_prix, session_type):
 def plot_stint_comparison(session, drivers, team_colors):
 
     plt.style.use("dark_background")
-    fig, ax = plt.subplots(figsize=(20, 12), dpi=1000)
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
     
     driver_positions = {}
     pit_lap_counts = defaultdict(int)  # Track how many pit stops happened on each lap
@@ -140,7 +140,7 @@ def plot_lap_time_distribution(session, team_colors):
     team_palette = {team: team_colors.get(team, "#888888") for team in team_order}
 
     # Create figure and axis
-    fig, ax = plt.subplots(figsize=(20, 12), dpi=1000)
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
     
     # Plot the boxplot
     sns.boxplot(
@@ -190,7 +190,7 @@ def plot_best_laps(session):
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
 
     # Create figure and axis
-    fig, ax = plt.subplots(figsize=(20, 12), dpi=1000)
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
 
     # Use team colors
     colors = [TEAM_COLORS.get(team, "gray") for team in teams]
@@ -241,7 +241,7 @@ def plot_lap_comparison(session, driver1, driver2):
     formatted_time2 = format_time(lap_time2)
 
     # Create figure and axes
-    fig, axs = plt.subplots(3, 1, figsize=(20, 12), dpi=1000)
+    fig, axs = plt.subplots(3, 1, figsize=(16, 9), dpi=1000)
 
     # Speed comparison
     axs[0].plot(lap1["Distance"], lap1["Speed"], label=driver1, color=color1)
@@ -323,7 +323,7 @@ def plot_max_speeds(session):
     colors = [team_colors[drv] for drv in valid_drivers]
 
     # Create figure for the plot
-    fig, ax = plt.subplots(figsize=(20, 12), dpi=300)
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
     ax.scatter(delta_times, speeds, color=colors, edgecolors="white", s=100)
 
     # Annotate each point with the driver's name
@@ -375,7 +375,7 @@ def plot_track_dominance(session, driver1, driver2):
     y_common = y_interp(common_progress)
 
     # Create figure with two subplots (track and legend)
-    fig = plt.figure(figsize=(16, 9), dpi=100)
+    fig = plt.figure(figsize=(16, 9), dpi=1000)
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
     ax_track = fig.add_subplot(spec[0])
     ax_legend = fig.add_subplot(spec[1])
