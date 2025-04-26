@@ -11,7 +11,7 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
     session = f1_analysis.load_session(mode, year, grand_prix, session_type)
     if session:
             if session_type == "Qualifying":
-                st.title('1. Best Lap Per Team')
+                st.subtitle('Best Lap Per Team')
                 fig = f1_analysis.plot_best_laps(session)
                 st.pyplot(fig)
                 
