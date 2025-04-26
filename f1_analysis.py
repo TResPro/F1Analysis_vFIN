@@ -393,14 +393,29 @@ def plot_track_dominance(session, driver1, driver2):
         faster_driver = driver1 if avg_speed1 > avg_speed2 else driver2
         color = color_driver1 if faster_driver == driver1 else color_driver2
 
-        # Select X, Y
-        x = sector1['X'].values if faster_driver == driver1 else sector2['X'].values
-        y = sector1['Y'].values if faster_driver == driver1 else sector2['Y'].values
+        if faster_driver == driver1:
+            x = sector1['X'].values
+            y = sector1['Y'].values
+        else:
+            x = sector2['X'].values
+            y = sector2['Y'].values
 
         if len(x) > 1:
+            # Normal plotting with winner color
             ax_track.plot(x, y, color=color, linewidth=2)
         else:
-            ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
+            # Try fallback: use any available data (driver1 or driver2)
+            if len(sector1) > 1:
+                x = sector1['X'].values
+                y = sector1['Y'].values
+                ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
+            elif len(sector2) > 1:
+                x = sector2['X'].values
+                y = sector2['Y'].values
+                ax_track.plot(x, y, color=overall_fastest_color, linewidth=2)
+            else:
+                # No points available for this mini-sector: skip it
+                continue
 
     # Start marker
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
