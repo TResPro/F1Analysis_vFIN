@@ -163,7 +163,7 @@ def plot_lap_time_distribution(session, team_colors):
 
     # Titles & Labels
     ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                 f"Lap Time Distribution",fontsize=14)
+                 f"Lap Time Distribution", fontsize=14)
     ax.grid(True, linestyle="--", alpha=0.5)
     ax.set(xlabel=None)
     plt.tight_layout()
@@ -347,67 +347,72 @@ def plot_max_speeds(session):
 
     return fig
 
-def add_minisectors(lap, n_minisectors=25):
-    telemetry = lap.get_telemetry().add_distance()
-    total_distance = telemetry['Distance'].max()
-    minisector_size = total_distance / n_minisectors
-    telemetry['Minisector'] = (telemetry['Distance'] / minisector_size).astype(int)
-    telemetry['Minisector'] = telemetry['Minisector'].clip(upper=n_minisectors - 1)
-    return telemetry
-
-def plot_track_dominance(session, driver1, driver2, n_minisectors=25):
+# Plot 4: Track Dominance
+def plot_track_dominance(session, driver1, driver2):
     plt.style.use("dark_background")
+    lapdata1 = session.laps.pick_drivers(driver1).pick_fastest()
+    lapdata2 = session.laps.pick_drivers(driver2).pick_fastest()
 
-    # Load data
-    lap1 = session.laps.pick_drivers(driver1).pick_fastest()
-    lap2 = session.laps.pick_drivers(driver2).pick_fastest()
+    lap1 = lapdata1.get_telemetry().add_distance()
+    lap2 = lapdata2.get_telemetry().add_distance()
 
-    telemetry1 = add_minisectors(lap1, n_minisectors)
-    telemetry2 = add_minisectors(lap2, n_minisectors)
-
-    driver1_team = lap1['Team']
-    driver2_team = lap2['Team']
+    driver1_team = lapdata1["Team"]
+    driver2_team = lapdata2["Team"]
 
     color_driver1 = TEAM_COLORS.get(driver1_team, 'gray')
     color_driver2 = TEAM_COLORS.get(driver2_team, 'gray')
 
-    # Prepare track points
-    avg_data = telemetry1.copy()
-    avg_data['X'] = (telemetry1['X'] + telemetry2['X']) / 2
-    avg_data['Y'] = (telemetry1['Y'] + telemetry2['Y']) / 2
+    # Synchronize distance for both drivers
+    max_distance = min(lap1['Distance'].max(), lap2['Distance'].max())
+    lap1 = lap1[lap1['Distance'] <= max_distance]
+    lap2 = lap2[lap2['Distance'] <= max_distance]
 
-    # Create figure
+    # Define subsectors
+    n_sectors = 25
+    sector_bounds = np.linspace(0, max_distance, n_sectors + 1)
+
     fig = plt.figure(figsize=(16, 9), dpi=300)
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
     ax_track = fig.add_subplot(spec[0])
     ax_legend = fig.add_subplot(spec[1])
 
-    # Plot track by minisector
-    for minisector in range(n_minisectors):
-        sector1 = telemetry1[telemetry1['Minisector'] == minisector]
-        sector2 = telemetry2[telemetry2['Minisector'] == minisector]
+    for i in range(n_sectors):
+        d_min = sector_bounds[i]
+        d_max = sector_bounds[i+1]
 
+        # Driver 1
+        sector1 = lap1[(lap1['Distance'] >= d_min) & (lap1['Distance'] < d_max)]
         avg_speed1 = sector1['Speed'].mean()
+
+        # Driver 2
+        sector2 = lap2[(lap2['Distance'] >= d_min) & (lap2['Distance'] < d_max)]
         avg_speed2 = sector2['Speed'].mean()
 
-        color = color_driver1 if avg_speed1 > avg_speed2 else color_driver2
+        # Choose who is faster
+        faster_driver = driver1 if avg_speed1 > avg_speed2 else driver2
+        color = color_driver1 if faster_driver == driver1 else color_driver2
 
-        # Points to plot
-        points = avg_data[avg_data['Minisector'] == minisector]
-        ax_track.plot(points['X'], points['Y'], color=color, linewidth=3)
+        # X, Y for plotting
+        x = sector1['X'].values if faster_driver == driver1 else sector2['X'].values
+        y = sector1['Y'].values if faster_driver == driver1 else sector2['Y'].values
 
-    # Start Marker
-    ax_track.plot(avg_data.iloc[0]['X'], avg_data.iloc[0]['Y'], marker='.', color='white', markersize=8, zorder=10)
-    ax_track.text(avg_data.iloc[0]['X'], avg_data.iloc[0]['Y'], "Start", fontsize=9, ha='left', va='bottom', color='white')
+        if len(x) > 1:  # Only plot if there are enough points
+            ax_track.plot(x, y, color=color, linewidth=2)
+
+    # Start marker
+    ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
+    ax_track.text(lap1['X'].iloc[0], lap1['Y'].iloc[0], "Start", fontsize=9, ha='left', va='bottom', color='white', zorder=11)
 
     # Corners
     circuit_info = session.get_circuit_info()
     for _, corner in circuit_info.corners.iterrows():
-        ax_track.text(corner['X'], corner['Y'], str(corner['Number']),
-                      fontsize=8, color='black', ha='center', va='center',
+        number = corner["Number"]
+        x = corner["X"]
+        y = corner["Y"]
+        ax_track.text(x, y, str(number), fontsize=8, color='black', ha='center', va='center',
                       bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2'))
 
-    # Axes settings
+    # Clean Track Plot
     ax_track.set_xticks([])
     ax_track.set_yticks([])
     for spine in ax_track.spines.values():
@@ -417,38 +422,25 @@ def plot_track_dominance(session, driver1, driver2, n_minisectors=25):
 
     # Legend
     ax_legend.axis('off')
-    lap_time1 = lap1['LapTime'].total_seconds()
-    lap_time2 = lap2['LapTime'].total_seconds()
-
-    def format_time(t):
-        minutes = int(t // 60)
-        seconds = int(t % 60)
-        millis = int((t - int(t)) * 1000)
-        return f"{minutes}:{seconds:02}.{millis:03}"
-
     legend_elements = [
-        Patch(facecolor=color_driver1, label=f"{driver1}\nLap: {format_time(lap_time1)}"),
-        Patch(facecolor=color_driver2, label=f"{driver2}\nLap: {format_time(lap_time2)}"),
+        Patch(facecolor=color_driver1, label=f"{driver1}"),
+        Patch(facecolor=color_driver2, label=f"{driver2}"),
     ]
     ax_legend.legend(
         handles=legend_elements,
         loc='center',
-        title="Fastest in Minisector",
-        fontsize=10,
-        title_fontsize=11,
+        fontsize=12,
         framealpha=0.95,
         borderpad=1.2,
         labelspacing=1.2
     )
 
-    # Title
     fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                 f"Track Dominance: {driver1} vs {driver2}",
-                 fontsize=14)
+                 f"Track Dominance by Highest Avg Speed in Subsector\n"
+                 f"{driver1} vs {driver2}", fontsize=14)
 
     plt.tight_layout()
     return fig
-
 
 
 if __name__ == "__main__":
