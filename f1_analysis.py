@@ -323,7 +323,7 @@ def plot_max_speeds(session):
     colors = [team_colors[drv] for drv in valid_drivers]
 
     # Create figure for the plot
-    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
+    fig, ax = plt.subplots(figsize=(12, 6), dpi=1000)
     ax.scatter(delta_times, speeds, color=colors, edgecolors="white", s=100)
 
     # Annotate each point with the driver's name
