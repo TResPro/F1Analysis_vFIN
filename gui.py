@@ -45,12 +45,12 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
             fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
             st.pyplot(fig, use_container_width=True)
 
-            st.subheader('📈 Lap Time Comparison')
-            fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-            st.pyplot(fig, use_container_width=True)
-
             st.subheader('🚀 Max Speeds vs Lap Time')
             fig = f1_analysis.plot_max_speeds(session)
+            st.pyplot(fig, use_container_width=True)
+
+            st.subheader('📈 Lap Time Comparison')
+            fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
             st.pyplot(fig, use_container_width=True)
 
 # Start Streamlit App
