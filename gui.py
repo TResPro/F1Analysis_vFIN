@@ -18,13 +18,13 @@ def show_fig_with_download(title, fig, filename):
                style="
                    background-color: transparent;
                    padding: 4px 6px;
-                   border: 1px solid lightgrey;
+                   border: 1px lightgrey;
                    border-radius: 6px;
                    text-decoration: none;
-                   font-size: 24px;
+                   font-size: 20px;
                    color: black;
                    position: relative;
-                   top: -2px;
+                   top: -3px;
                ">
                 📥
             </a>
