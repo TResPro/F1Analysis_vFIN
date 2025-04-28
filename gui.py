@@ -1,22 +1,27 @@
 import streamlit as st
 import f1_analysis
 import io
+import base64
 
-# Visualize plots and download button
+# Download button
 def show_fig_with_download(title, fig, filename):
+    # Save figure to buffer
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
-    
-    # Create a horizontal layout 
-    st.markdown(f"### {title} 📥", unsafe_allow_html=True)
-    st.download_button(
-        label="Download",  # Or just 📥 if you want the button very tiny
-        data=buf,
-        file_name=f"{filename}.png",
-        mime="image/png",
-        key=filename,
-    )
+
+    # Encode buffer to base64
+    b64 = base64.b64encode(buf.read()).decode()
+
+    # Now layout: title (already with emoji) + 📥 button
+    st.markdown(f"""
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <h3 style="margin: 0;">{title}</h3>
+            <a href="data:file/png;base64,{b64}" download="{filename}.png" style="text-decoration: none; font-size: 28px;">
+                📥
+            </a>
+        </div>
+    """, unsafe_allow_html=True)
 
     st.pyplot(fig, use_container_width=True)
 
