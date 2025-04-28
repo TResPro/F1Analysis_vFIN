@@ -3,36 +3,6 @@ import f1_analysis
 import io
 import base64
 
-# Download button
-def show_fig_with_download(title, fig, filename):
-
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
-    buf.seek(0)
-    b64 = base64.b64encode(buf.read()).decode()
-
-    st.markdown(f"""
-        <div style="display: flex; align-items: center; gap: 6px;">
-            <h3 style="margin: 0;">{title}</h3>
-            <a href="data:file/png;base64,{b64}" download="{filename}.png" 
-               style="
-                   background-color: transparent;
-                   padding: 4px 6px;
-                   border: 0.5px solid #666666;
-                   border-radius: 6px;
-                   text-decoration: none;
-                   font-size: 16px;
-                   color: black;
-                   position: relative;
-                   top: -2px;
-               ">
-                📥
-            </a>
-        </div>
-    """, unsafe_allow_html=True)
-
-    st.pyplot(fig, use_container_width=True)
-
 # Caching to make the successive runs faster
 @st.cache_resource
 def load_session_cached(mode, year, grand_prix, session_type):
@@ -132,6 +102,36 @@ def run_streamlit_app():
         submitted = st.form_submit_button("🚀 Load Session")
     if submitted:
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
+
+# Download button
+def show_fig_with_download(title, fig, filename):
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+    b64 = base64.b64encode(buf.read()).decode()
+
+    st.markdown(f"""
+        <div style="display: flex; align-items: center; gap: 6px;">
+            <h3 style="margin: 0;">{title}</h3>
+            <a href="data:file/png;base64,{b64}" download="{filename}.png" 
+               style="
+                   background-color: transparent;
+                   padding: 4px 6px;
+                   border: 0.5px solid #666666;
+                   border-radius: 6px;
+                   text-decoration: none;
+                   font-size: 16px;
+                   color: black;
+                   position: relative;
+                   top: -2px;
+               ">
+                📥
+            </a>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.pyplot(fig, use_container_width=True)
 
 if __name__ == "__main__":
     run_streamlit_app()
