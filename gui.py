@@ -15,7 +15,17 @@ def show_fig_with_download(title, fig, filename):
         <div style="display: flex; align-items: center; gap: 6px;">
             <h3 style="margin: 0;">{title}</h3>
             <a href="data:file/png;base64,{b64}" download="{filename}.png" 
-               style="background-color: transparent; padding: 2px 4px; border-radius: 6px; text-decoration: none; font-size: 24px; color: black; position: relative; top: -2px;">
+               style="
+                   background-color: transparent;
+                   padding: 4px 6px;
+                   border: 1px solid lightgrey;
+                   border-radius: 6px;
+                   text-decoration: none;
+                   font-size: 24px;
+                   color: black;
+                   position: relative;
+                   top: -2px;
+               ">
                 📥
             </a>
         </div>
