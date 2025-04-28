@@ -4,7 +4,7 @@ import io
 
 # Visualize plots and download button
 def show_fig_with_download(title, fig, filename):
-    cols = st.columns([6, 1])
+    cols = st.columns([1, 1])
     with cols[0]:
         st.subheader(title)
     with cols[1]:
