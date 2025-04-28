@@ -4,7 +4,7 @@ import io
 
 # Visualize plots and download button
 def show_fig_with_download(title, fig, filename):
-    cols = st.columns([8, 1])
+    cols = st.columns([2, 1])
     with cols[0]:
         st.subheader(title)
     with cols[1]:
@@ -12,7 +12,7 @@ def show_fig_with_download(title, fig, filename):
         fig.savefig(buf, format="png", bbox_inches="tight")
         buf.seek(0)
         st.download_button(
-            label="📥", 
+            label="⬇️", 
             data=buf, 
             file_name=f"{filename}.png", 
             mime="image/png",
