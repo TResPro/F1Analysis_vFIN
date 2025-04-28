@@ -1,9 +1,28 @@
 import streamlit as st
 import f1_analysis
+import io
 
-# Load session from inputs
+# Visualize plots and download button
+def show_fig_with_download(title, fig, filename):
+    cols = st.columns([8, 1])
+    with cols[0]:
+        st.subheader(title)
+    with cols[1]:
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png", bbox_inches="tight")
+        buf.seek(0)
+        st.download_button(
+            label="📥", 
+            data=buf, 
+            file_name=f"{filename}.png", 
+            mime="image/png",
+            key=filename  
+        )
+    st.pyplot(fig, use_container_width=True)
+
 def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
     from f1_analysis import TEAM_COLORS
+
     if not driver1 or not driver2:
         st.error("⚠️ Please enter both driver names.")
         return
@@ -11,63 +30,37 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
     session = f1_analysis.load_session(mode, year, grand_prix, session_type)
     if session:
         if session_type == "Qualifying":
-            st.subheader('🏎️ Best Lap Per Team')
             fig = f1_analysis.plot_best_laps(session)
-            show_fig_with_download(fig, "best_lap_per_team")
+            show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_Q')
 
-            st.subheader('📈 Lap Time Comparison')
             fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_Q')
 
-            st.subheader('🏁 Track Dominance')
             fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_Q')
 
-            st.subheader('🚀 Max Speeds vs Lap Time')
             fig = f1_analysis.plot_max_speeds(session)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_Q')
 
         elif session_type == "Race":
-            st.subheader('🏁 Stint Comparison')
             fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_R')
 
-            st.subheader('📊 Lap Time Distribution')
             fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_R')
 
         elif session_type in ["FP1", "FP2", "FP3"]:
-            st.subheader('🏎️ Best Lap Per Team')
             fig = f1_analysis.plot_best_laps(session)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_FP')
 
-            st.subheader('📊 Lap Time Distribution')
             fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_FP')
 
-            st.subheader('🚀 Max Speeds vs Lap Time')
             fig = f1_analysis.plot_max_speeds(session)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_FP')
 
-            st.subheader('📈 Lap Time Comparison')
             fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-            st.pyplot(fig, use_container_width=True)
-
-# To Visualize figure and download button
-def show_fig_with_download(fig, title_filename):
-    import io
-    st.pyplot(fig, use_container_width=True)
-
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
-    buf.seek(0)
-
-    st.download_button(
-        label="📥 Download Figure",
-        data=buf,
-        file_name=f"{title_filename}.png",
-        mime="image/png"
-    )
+            show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_FP')
 
 
 # Start Streamlit App
