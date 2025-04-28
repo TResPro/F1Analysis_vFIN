@@ -20,6 +20,12 @@ def show_fig_with_download(title, fig, filename):
         )
     st.pyplot(fig, use_container_width=True)
 
+# Caching to make the successive runs faster
+@st.cache_resource
+def load_session_cached(mode, year, grand_prix, session_type):
+    from f1_analysis import load_session
+    return load_session(mode, year, grand_prix, session_type)
+
 def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
     from f1_analysis import TEAM_COLORS
 
