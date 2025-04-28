@@ -14,7 +14,8 @@ def show_fig_with_download(title, fig, filename):
     st.markdown(f"""
         <div style="display: flex; align-items: center; gap: 8px;">
             <h3 style="margin: 0;">{title}</h3>
-            <a href="data:file/png;base64,{b64}" download="{filename}.png" style="text-decoration: none; font-size: 20px;">
+            <a href="data:file/png;base64,{b64}" download="{filename}.png" 
+               style="background-color: #f0f0f0; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 24px; color: black;">
                 📥
             </a>
         </div>
