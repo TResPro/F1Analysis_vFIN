@@ -13,7 +13,7 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
         if session_type == "Qualifying":
             st.subheader('🏎️ Best Lap Per Team')
             fig = f1_analysis.plot_best_laps(session)
-            st.pyplot(fig, use_container_width=True)
+            show_fig_with_download(fig, "best_lap_per_team")
 
             st.subheader('📈 Lap Time Comparison')
             fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
@@ -53,6 +53,23 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
             fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
             st.pyplot(fig, use_container_width=True)
 
+# To Visualize figure and download button
+def show_fig_with_download(fig, title_filename):
+    import io
+    st.pyplot(fig, use_container_width=True)
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+
+    st.download_button(
+        label="📥 Download Figure",
+        data=buf,
+        file_name=f"{title_filename}.png",
+        mime="image/png"
+    )
+
+
 # Start Streamlit App
 def run_streamlit_app():
     st.set_page_config(page_title="F1 Telemetry Analyzer", layout="centered")
@@ -71,7 +88,6 @@ def run_streamlit_app():
         )
         st.markdown("---")
         st.markdown("Made with passion for F1 fans.<br>📩Contact Me formulatelemetryinfo@gmail.com", unsafe_allow_html=True)
-        #st.caption("Made with passion for F1 fans.\nContact Me: formulatelemetryinfo@gmail.com")
 
     # Main title
     st.title("🏎️ F1 Telemetry Analyzer")
