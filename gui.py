@@ -4,20 +4,20 @@ import io
 
 # Visualize plots and download button
 def show_fig_with_download(title, fig, filename):
-    cols = st.columns([1, 1])
-    with cols[0]:
-        st.subheader(title)
-    with cols[1]:
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", bbox_inches="tight")
-        buf.seek(0)
-        st.download_button(
-            label="📥", 
-            data=buf, 
-            file_name=f"{filename}.png", 
-            mime="image/png",
-            key=filename  
-        )
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+    
+    # Create a horizontal layout 
+    st.markdown(f"### {title} 📥", unsafe_allow_html=True)
+    st.download_button(
+        label="Download",  # Or just 📥 if you want the button very tiny
+        data=buf,
+        file_name=f"{filename}.png",
+        mime="image/png",
+        key=filename,
+    )
+
     st.pyplot(fig, use_container_width=True)
 
 # Caching to make the successive runs faster
