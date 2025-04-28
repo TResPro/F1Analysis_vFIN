@@ -18,7 +18,7 @@ def show_fig_with_download(title, fig, filename):
                style="
                    background-color: transparent;
                    padding: 4px 6px;
-                   border: 0.5px solid #999999;
+                   border: 0.5px solid #cccccc;
                    border-radius: 6px;
                    text-decoration: none;
                    font-size: 20px;
