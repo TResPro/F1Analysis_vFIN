@@ -111,8 +111,8 @@ def run_streamlit_app():
 
         # Button in the form
         submitted = st.form_submit_button("🚀 Load Session")
-        if submitted:
-            on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
+    if submitted:
+        on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 
 if __name__ == "__main__":
     run_streamlit_app()
