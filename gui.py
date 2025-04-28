@@ -12,10 +12,10 @@ def show_fig_with_download(title, fig, filename):
     b64 = base64.b64encode(buf.read()).decode()
 
     st.markdown(f"""
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
             <h3 style="margin: 0;">{title}</h3>
             <a href="data:file/png;base64,{b64}" download="{filename}.png" 
-               style="background-color: #f0f0f0; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 24px; color: black;">
+               style="background-color: transparent; padding: 2px 4px; border-radius: 6px; text-decoration: none; font-size: 24px; color: black; position: relative; top: -2px;">
                 📥
             </a>
         </div>
