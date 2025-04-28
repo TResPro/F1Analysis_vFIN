@@ -5,19 +5,16 @@ import base64
 
 # Download button
 def show_fig_with_download(title, fig, filename):
-    # Save figure to buffer
+
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
-
-    # Encode buffer to base64
     b64 = base64.b64encode(buf.read()).decode()
 
-    # Now layout: title (already with emoji) + 📥 button
     st.markdown(f"""
         <div style="display: flex; align-items: center; gap: 8px;">
             <h3 style="margin: 0;">{title}</h3>
-            <a href="data:file/png;base64,{b64}" download="{filename}.png" style="text-decoration: none; font-size: 28px;">
+            <a href="data:file/png;base64,{b64}" download="{filename}.png" style="text-decoration: none; font-size: 20px;">
                 📥
             </a>
         </div>
