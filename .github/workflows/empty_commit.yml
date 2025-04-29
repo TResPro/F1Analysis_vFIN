@@ -1,0 +1,33 @@
+name: Empty Commit
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # Runs every 12 hours (UTC)
+  workflow_dispatch:   # Allows manual trigger of the workflow
+    inputs:
+      commit_message:
+        description: 'Optional commit message'
+        required: false
+        default: 'Empty commit'
+
+jobs:
+  empty_commit:
+    runs-on: windows-latest  # Use the latest Windows runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Checkout the repository
+
+      - name: Set up Git user
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Empty commit
+        run: |
+          git add .  # Stage all files (no actual changes, this will include untracked files)
+          git commit --amend --no-edit --date "$(date -u +'%a, %d %b %Y %H:%M:%S +0000')"  # Amend the commit with a new timestamp
+          git push origin main  # Push the commit to the main branch (replace 'main' if you're using a different branch)
+
+      - name: Notify if commit is successful
+        run: echo "Empty commit successful!"
