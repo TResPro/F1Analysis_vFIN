@@ -6,4 +6,3 @@ scipy
 customtkinter
 Pillow
 streamlit
-io
