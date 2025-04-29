@@ -113,7 +113,6 @@ def run_streamlit_app():
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 
 # Caching savefig to make it faster
-@st.cache_data
 def get_fig_bytes(_fig):
     buf = io.BytesIO()
     _fig.savefig(buf, format="png", bbox_inches="tight")
