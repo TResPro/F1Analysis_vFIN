@@ -10,6 +10,14 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
         st.error("⚠️ Please enter both driver names.")
         return
 
+def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
+    from f1_analysis import TEAM_COLORS
+
+    if not driver1 or not driver2:
+        st.error("⚠️ Please enter both driver names.")
+        return
+
+    # Show loading spinner while loading the session and generating plots
     with st.spinner("⏳ Loading session data and generating plots..."):
         session = f1_analysis.load_session(mode, year, grand_prix, session_type)
 
@@ -47,9 +55,11 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_FP')
 
                 fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-                show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_FP')
+                if fig is not None:
+                    show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_Q')
 
         st.success("✅ All plots generated successfully!")
+
 
 # Start Streamlit App
 def run_streamlit_app():
