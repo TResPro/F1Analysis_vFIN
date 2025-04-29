@@ -227,9 +227,11 @@ def plot_lap_comparison(session, driver1, driver2):
 
     # Be sure drivers participated to the session
     if lapdata1 is None:
-        st.warning(f"No laps completed in {session.event['EventName']} {session.event.year} {session.name} for {driver1}")
-    elif lapdata2 is None:
-        st.warning(f"No laps completed in {session.event['EventName']} {session.event.year} {session.name} for {driver2}")
+        st.warning(f"No laps completed for {driver1}")
+        return None
+    if lapdata2 is None:
+        st.warning(f"No laps completed for {driver2}")
+        return None
     else:
         lap1 = lapdata1.get_telemetry().add_distance()
         lap2 = lapdata2.get_telemetry().add_distance()
