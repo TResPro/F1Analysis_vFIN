@@ -227,10 +227,10 @@ def plot_lap_comparison(session, driver1, driver2):
 
     # Be sure drivers participated to the session
     if lapdata1 is None:
-        st.warning(f"No laps completed for {driver1}")
+        st.warning(f"No laps completed for {driver1}, probably crash or substituted by a rookie. Cannot display lap comparison")
         return None
     if lapdata2 is None:
-        st.warning(f"No laps completed for {driver2}")
+        st.warning(f"No laps completed for {driver2}, probably crash or substituted by a rookie. Cannot display lap comparison")
         return None
     else:
         lap1 = lapdata1.get_telemetry().add_distance()
