@@ -6,3 +6,5 @@ scipy
 customtkinter
 Pillow
 streamlit
+io
+base64
