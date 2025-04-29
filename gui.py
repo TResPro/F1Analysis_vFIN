@@ -99,9 +99,9 @@ def run_streamlit_app():
 
 # Caching 
 @st.cache_data
-def get_fig_bytes(fig):
+def get_fig_bytes(_fig):
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
+    _fig.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
     return buf.read()
 
