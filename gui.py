@@ -2,15 +2,9 @@ import streamlit as st
 import f1_analysis
 import io
 import base64
-
-# Caching to make the successive runs faster
-@st.cache_resource
-def load_session_cached(mode, year, grand_prix, session_type):
-    from f1_analysis import load_session
-    return load_session(mode, year, grand_prix, session_type)
+from f1_analysis import TEAM_COLORS
 
 def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
-    from f1_analysis import TEAM_COLORS
 
     if not driver1 or not driver2:
         st.error("⚠️ Please enter both driver names.")
@@ -103,13 +97,18 @@ def run_streamlit_app():
     if submitted:
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 
-# Download button
-def show_fig_with_download(title, fig, filename):
-
+# Caching 
+@st.cache_data
+def get_fig_bytes(fig):
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
-    b64 = base64.b64encode(buf.read()).decode()
+    return buf.read()
+
+# Download button
+def show_fig_with_download(title, fig, filename):
+    fig_bytes = get_fig_bytes(fig)
+    b64 = base64.b64encode(fig_bytes).decode()
 
     st.markdown(f"""
         <div style="display: flex; align-items: center; gap: 6px;">
@@ -125,7 +124,7 @@ def show_fig_with_download(title, fig, filename):
                    color: black;
                    position: relative;
                    top: -2px;
-               ">
+               " title="Download figure">
                 📥
             </a>
         </div>
