@@ -10,41 +10,46 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
         st.error("⚠️ Please enter both driver names.")
         return
 
-    session = f1_analysis.load_session(mode, year, grand_prix, session_type)
-    if session:
-        if session_type == "Qualifying":
-            fig = f1_analysis.plot_best_laps(session)
-            show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_Q')
+    with st.spinner("⏳ Loading session data and generating plots..."):
+        session = f1_analysis.load_session(mode, year, grand_prix, session_type)
 
-            fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-            show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_Q')
+        if session:
+            st.toast("✅ Session loaded!", icon="📂")
 
-            fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
-            show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_Q')
+            if session_type == "Qualifying":
+                fig = f1_analysis.plot_best_laps(session)
+                show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_Q')
 
-            fig = f1_analysis.plot_max_speeds(session)
-            show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_Q')
+                fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
+                show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_Q')
 
-        elif session_type == "Race":
-            fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
-            show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_R')
+                fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
+                show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_Q')
 
-            fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
-            show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_R')
+                fig = f1_analysis.plot_max_speeds(session)
+                show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_Q')
 
-        elif session_type in ["FP1", "FP2", "FP3"]:
-            fig = f1_analysis.plot_best_laps(session)
-            show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_FP')
+            elif session_type == "Race":
+                fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
+                show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_R')
 
-            fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
-            show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_FP')
+                fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
+                show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_R')
 
-            fig = f1_analysis.plot_max_speeds(session)
-            show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_FP')
+            elif session_type in ["FP1", "FP2", "FP3"]:
+                fig = f1_analysis.plot_best_laps(session)
+                show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_FP')
 
-            fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-            show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_FP')
+                fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
+                show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_FP')
 
+                fig = f1_analysis.plot_max_speeds(session)
+                show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_FP')
+
+                fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
+                show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_FP')
+
+        st.success("✅ All plots generated successfully!")
 
 # Start Streamlit App
 def run_streamlit_app():
@@ -97,7 +102,7 @@ def run_streamlit_app():
     if submitted:
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 
-# Caching 
+# Caching savefig to make it faster
 @st.cache_data
 def get_fig_bytes(_fig):
     buf = io.BytesIO()
