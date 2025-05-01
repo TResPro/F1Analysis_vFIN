@@ -60,7 +60,7 @@ def load_session(mode, year, grand_prix, session_type):
             matched_events = schedule[schedule['EventName'].str.contains(grand_prix, case=False, na=False)]
 
             if matched_events.empty:
-                st.warning(f"**{grand_prix} did not host a race weekend in {year}.**")
+                st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
                 return None
 
             # Check if session was held in that weekend
@@ -70,7 +70,7 @@ def load_session(mode, year, grand_prix, session_type):
             return session
 
         except Exception as e:
-            st.warning(f"**Error loading session: {e}**")
+            st.warning(f"Error loading session: {e}")
             return None
 
     return None
@@ -243,10 +243,10 @@ def plot_lap_comparison(session, driver1, driver2):
 
     # Be sure drivers participated to the session
     if lapdata1 is None:
-        st.warning(f"No laps completed for {driver1}, probably crash or substituted by a rookie. Cannot display lap comparison with {driver2}")
+        st.warning(f"No laps completed for **{driver1}**, probably crash or substituted by a rookie. Cannot display lap comparison with {driver2}")
         return None
     if lapdata2 is None:
-        st.warning(f"No laps completed for {driver2}, probably crash or substituted by a rookie. Cannot display lap comparison with {driver1}")
+        st.warning(f"**No laps completed for **{driver2}**, probably crash or substituted by a rookie. Cannot display lap comparison with {driver1}**")
         return None
     else:
         lap1 = lapdata1.get_telemetry().add_distance()
@@ -345,7 +345,7 @@ def plot_max_speeds(session):
         if fastest_lap is not None:
             best_laps[driver] = fastest_lap["LapTime"]
         else:
-            st.warning(f"No valid fastest lap for {driver}")
+            st.warning(f"No valid fastest lap for **{driver}**")
             continue  
 
         team = laps.iloc[0]["Team"]
