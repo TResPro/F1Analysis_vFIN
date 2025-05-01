@@ -118,9 +118,6 @@ def plot_stint_comparison(session, drivers, team_colors):
         # Plot stint comparison
         ax.plot(lap_numbers, lap_times, color=color, linewidth=2, label=f"{driver} P{int(final_position)}, {pit_stops} stop")
 
-        if pit_stops == 3:
-            st.warning('A Safety Car through the pit lane could be present, be careful about pit stop count.')
-
         # Mark pit exit laps with vertical dashed lines
         offset = 0.15  # offset to separate overlapping lines
         for pit_exit in pit_exit_laps:
@@ -128,6 +125,10 @@ def plot_stint_comparison(session, drivers, team_colors):
             shift = (pit_lap_counts[pit_exit] - 1) * offset  # Adjust position
             
             ax.axvline(x=pit_exit + shift, color=color, linestyle="-.", alpha=0.8, linewidth=1)
+            
+    # Warning
+    if pit_stops > 3:
+        st.warning('A Safety Car through the pit lane could be present, be careful about pit stop count.')
 
     # Plotting
     driver_info = " vs ".join([f"{driver} (P{int(pos)})" for driver, pos in driver_positions.items()])
