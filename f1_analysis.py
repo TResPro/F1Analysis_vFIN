@@ -65,9 +65,9 @@ def load_session(mode, year, grand_prix, session_type):
 
             # Check if session was held in that weekend
             event = fastf1.get_event(int(year), grand_prix)
-            available_sessions = event['Session*']
+            available_sessions = [session.name for session in event.sessions]
 
-            if session_mapping[session_type] not in available_sessions:
+            if session_type not in available_sessions:
                 st.warning(f"{session_type} was not held during the {event['EventName']} weekend in {year}.")
                 return None
                 
