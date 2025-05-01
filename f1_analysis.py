@@ -139,7 +139,7 @@ def plot_stint_comparison(session, drivers, team_colors):
                  f"{driver_info}", fontsize=14)
     ax.legend()
     ax.grid(True, linestyle="--", alpha=0.5)
-    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    #ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     
     return fig
 
