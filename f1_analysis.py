@@ -57,10 +57,9 @@ def load_session(mode, year, grand_prix, session_type):
 
         try:
             #Check if the Grand Prix exists in that year
-            schedule = fastf1.get_event_schedule(int(year))
-            matched_events = schedule[schedule['EventName'].str.contains(grand_prix, case=False, na=False)]
+            event = fastf1.get_event(int(year), grand_prix)
 
-            if matched_events.empty:
+            if event.Country is None:
                 st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
                 return None
 
