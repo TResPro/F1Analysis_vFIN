@@ -60,7 +60,7 @@ def load_session(mode, year, grand_prix, session_type):
             matched_events = schedule[schedule['EventName'].str.contains(grand_prix, case=False, na=False)]
 
             if matched_events.empty:
-                st.warning(f"'{grand_prix}' GP was not held in {year}.")
+                st.warning(f"{grand_prix} GP was not held in {year}.")
                 return None
 
             # Check if session was held in that weekend
@@ -77,7 +77,7 @@ def load_session(mode, year, grand_prix, session_type):
             return session
 
         except Exception as e:
-            st.warning(f"Error loading session: {e}")
+            print(f"Error loading session: {e}")
             return None
 
     return None
