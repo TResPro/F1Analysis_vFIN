@@ -60,7 +60,7 @@ def load_session(mode, year, grand_prix, session_type):
             matched_events = schedule[schedule['EventName'].str.contains(grand_prix, case=False, na=False)]
 
             if matched_events.empty:
-                st.warning(f"{grand_prix} GP was not held in {year}.")
+                st.warning(f"A Race weekend was not held in {grand_prix} in {year}.")
                 return None
 
             # Check if session was held in that weekend
