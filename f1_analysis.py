@@ -45,33 +45,42 @@ def load_session(mode, year, grand_prix, session_type):
             "FP1": "FP1",
             "FP2": "FP2",
             "FP3": "FP3",
-            "Sprint Qualifying": "Sprint Qualifying", 
+            "Sprint Qualifying": "Sprint Qualifying",
             "Qualifying": "Qualifying",
             "Sprint Race": "Sprint",
             "Race": "Race"
         }
+
         if not all([year, grand_prix, session_type]):
-            st.warning("Not all inputs selected")
-            return None
-    try: 
-        schedule = fastf1.get_event_schedule(int(year))
-        event = schedule[schedule['EventName'].str.lower() == grand_prix.lower()]
-
-        available_sessions = event.iloc[0][['Session1', 'Session2', 'Session3', 'Session4', 'Session5']].tolist()
-
-        if session_mapping[session_type] not in available_sessions:
-            st.warning(f"'{session_type}' did not take place during {year} {grand_prix}.")
             return None
 
-        session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
+        try:
+            #Check if the Grand Prix exists in that year
+            schedule = fastf1.get_event_schedule(int(year))
+            matched_events = schedule[schedule['EventName'].str.contains(grand_prix, case=False, na=False)]
 
-        session.load()
+            if matched_events.empty:
+                st.warning(f"'{grand_prix}' GP was not held in {year}.")
+                return None
 
-        return session
+            # Check if session was held in that weekend
+            event = fastf1.get_event(int(year), grand_prix)
+            available_sessions = [s['SessionName'] for s in event['Sessions']]
 
-    except Exception as e:
-        print(f"Error loading session: {e}")
-        return None
+            if session_mapping[session_type] not in available_sessions:
+                st.warning(f"{session_type} was not held during the {event['EventName']} weekend in {year}.")
+                return None
+
+            # Load the session
+            session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
+            session.load()
+            return session
+
+        except Exception as e:
+            st.warning(f"Error loading session: {e}")
+            return None
+
+    return None
 
 '''------------------------------------------------------------------------------------'''
 
