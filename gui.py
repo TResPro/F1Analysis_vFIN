@@ -37,12 +37,32 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 fig = f1_analysis.plot_max_speeds(session)
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_Q')
 
+            if session_type == "Sprint Qualifying":
+                fig = f1_analysis.plot_best_laps(session)
+                show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_SQ')
+
+                fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
+                show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_SQ')
+
+                fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
+                show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_SQ')
+
+                fig = f1_analysis.plot_max_speeds(session)
+                show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_SQ')
+
             elif session_type == "Race":
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_R')
 
                 fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
                 show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_R')
+
+            elif session_type == "Sprint Race":
+                fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
+                show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_SR')
+
+                fig = f1_analysis.plot_lap_time_distribution(session, TEAM_COLORS)
+                show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_SR')
 
             elif session_type in ["FP1", "FP2", "FP3"]:
                 fig = f1_analysis.plot_best_laps(session)
@@ -92,7 +112,7 @@ def run_streamlit_app():
         with col1:
             mode = st.selectbox("Select Mode:", ["Grand Prix"], index=0)
             year = st.selectbox("Select Year", ["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"])
-            session_type = st.selectbox("Select Session", ["FP1", "FP2", "FP3", "Qualifying", "Race"])
+            session_type = st.selectbox("Select Session", ["FP1", "FP2", "FP3", "Sprint Qualifying", "Qualifying", "Sprint Race","Race"])
 
         with col2:
             grand_prix = st.selectbox(
@@ -112,7 +132,7 @@ def run_streamlit_app():
     if submitted:
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 
-# Caching savefig to make it faster
+# Faster byte conversion
 def get_fig_bytes(_fig):
     buf = io.BytesIO()
     _fig.savefig(buf, format="png", bbox_inches="tight")
