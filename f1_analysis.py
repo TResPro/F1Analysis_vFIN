@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.ticker import MultipleLocator
 import matplotlib.gridspec as gridspec
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 import gui
 import seaborn as sns
@@ -125,7 +126,7 @@ def plot_stint_comparison(session, drivers, team_colors):
             shift = (pit_lap_counts[pit_exit] - 1) * offset  # Adjust position
             
             ax.axvline(x=pit_exit + shift, color=color, linestyle="-.", alpha=0.8, linewidth=1)
-            
+
     # Warning
     if pit_stops > 3:
         st.warning('A Safety Car through the pit lane could be present, be careful about pit stop count.')
@@ -139,6 +140,7 @@ def plot_stint_comparison(session, drivers, team_colors):
                  f"{driver_info}", fontsize=14)
     ax.legend()
     ax.grid(True, linestyle="--", alpha=0.5)
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     
     return fig
 
