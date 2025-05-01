@@ -55,26 +55,24 @@ def load_session(mode, year, grand_prix, session_type):
             return None
 
         try:
-            #Check if the Grand Prix exists in that year
+            # Retrieve the event schedule for the specified year
             schedule = fastf1.get_event_schedule(int(year))
+
+            # Attempt to find the event that matches the provided Grand Prix name
             matched_events = schedule[schedule['EventName'].str.contains(grand_prix, case=False, na=False)]
 
             if matched_events.empty:
-                st.warning(f"{grand_prix} GP was not held in {year}.")
+                st.warning(f"'{grand_prix}' was not held in {year}.")
                 return None
 
-            # Check if session was held in that weekend
-            event = fastf1.get_event(int(year), grand_prix)
-            available_sessions = event.get_sessions()
-
-            if session_mapping[session_type] not in available_sessions:
-                st.warning(f"{session_type} was not held during the {event['EventName']} weekend in {year}.")
+            # Attempt to load the specified session
+            try:
+                session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
+                session.load()
+                return session
+            except Exception as e:
+                st.warning(f"{session_type} was not held during the {grand_prix} weekend in {year}.")
                 return None
-            
-            # Load the session
-            session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
-            session.load()
-            return session
 
         except Exception as e:
             st.warning(f"Error loading session: {e}")
