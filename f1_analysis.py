@@ -51,15 +51,11 @@ def load_session(mode, year, grand_prix, session_type):
             "Race": "Race"
         }
         if not all([year, grand_prix, session_type]):
-            st.warning("Not all ")
+            st.warning("Not all inputs selected")
             return None
-    try:
+    try: 
         schedule = fastf1.get_event_schedule(int(year))
         event = schedule[schedule['EventName'].str.lower() == grand_prix.lower()]
-
-        if event.empty:
-            st.warning(f"Event '{grand_prix}' not found in {year}.")
-            return None
 
         available_sessions = event.iloc[0][['Session1', 'Session2', 'Session3', 'Session4', 'Session5']].tolist()
 
