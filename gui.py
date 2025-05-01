@@ -10,13 +10,6 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
         st.error("⚠️ Please enter both driver names.")
         return
 
-def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
-    from f1_analysis import TEAM_COLORS
-
-    if not driver1 or not driver2:
-        st.error("⚠️ Please enter both driver names.")
-        return
-
     # Show loading spinner while loading the session and generating plots
     with st.spinner("⏳ Loading session data and generating plots..."):
         session = f1_analysis.load_session(mode, year, grand_prix, session_type)
@@ -40,6 +33,8 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
             elif session_type == "Sprint Qualifying":
                 fig = f1_analysis.plot_best_laps(session)
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_SQ')
+                if session_type is None:
+                    st.warning(f'There was no {session_type} during {year} {grand_prix}')
 
                 fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
                 show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_SQ')
