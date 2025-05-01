@@ -118,7 +118,7 @@ def plot_stint_comparison(session, drivers, team_colors):
         # Plot stint comparison
         ax.plot(lap_numbers, lap_times, color=color, linewidth=2, label=f"{driver} P{int(final_position)}, {pit_stops} stop")
 
-        if pit_stops > 3:
+        if pit_stops > 3 and pit_stops < 4:
             st.warning('A Safety Car through the pit lane could be present, be careful about pit stop count.')
 
         # Mark pit exit laps with vertical dashed lines
