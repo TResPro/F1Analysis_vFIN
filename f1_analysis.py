@@ -51,15 +51,31 @@ def load_session(mode, year, grand_prix, session_type):
             "Race": "Race"
         }
         if not all([year, grand_prix, session_type]):
+            st.warning("Not all ")
             return None
-        try:
-            session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
-            session.load()
-            return session
-        except Exception as e:
-            print(f"Error loading session: {e}")
+    try:
+        schedule = fastf1.get_event_schedule(int(year))
+        event = schedule[schedule['EventName'].str.lower() == grand_prix.lower()]
+
+        if event.empty:
+            st.warning(f"Event '{grand_prix}' not found in {year}.")
             return None
-    return None
+
+        available_sessions = event.iloc[0][['Session1', 'Session2', 'Session3', 'Session4', 'Session5']].tolist()
+
+        if session_mapping[session_type] not in available_sessions:
+            st.warning(f"'{session_type}' did not take place during {year} {grand_prix}.")
+            return None
+
+        session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
+
+        session.load()
+
+        return session
+
+    except Exception as e:
+        print(f"Error loading session: {e}")
+        return None
 
 '''------------------------------------------------------------------------------------'''
 
