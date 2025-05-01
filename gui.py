@@ -37,7 +37,7 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 fig = f1_analysis.plot_max_speeds(session)
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_Q')
 
-            if session_type == "Sprint Qualifying":
+            if session_type == "Sprint Shootout":
                 fig = f1_analysis.plot_best_laps(session)
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_SQ')
 
@@ -112,7 +112,7 @@ def run_streamlit_app():
         with col1:
             mode = st.selectbox("Select Mode:", ["Grand Prix"], index=0)
             year = st.selectbox("Select Year", ["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"])
-            session_type = st.selectbox("Select Session", ["FP1", "FP2", "FP3", "Sprint Qualifying", "Qualifying", "Sprint Race","Race"])
+            session_type = st.selectbox("Select Session", ["FP1", "FP2", "FP3", "Sprint Shootout", "Qualifying", "Sprint Race","Race"])
 
         with col2:
             grand_prix = st.selectbox(
