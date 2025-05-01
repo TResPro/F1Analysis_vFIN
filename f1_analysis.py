@@ -139,7 +139,7 @@ def plot_stint_comparison(session, drivers, team_colors):
                  f"{driver_info}", fontsize=14)
     ax.legend()
     ax.grid(True, linestyle="--", alpha=0.5)
-    #ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     
     return fig
 
@@ -318,10 +318,18 @@ def plot_lap_comparison(session, driver1, driver2):
         axs[2].grid(True, linestyle="--", alpha=0.5)
         axs[2].set_xlabel("Distance (%)")
 
+        # Get final race position for each driver
+        driver1_laps = session.laps.pick_drivers(driver1)
+        driver2_laps = session.laps.pick_drivers(driver2)
+
+        # Use the last lap to get their final position
+        driver1_pos = driver1_laps.iloc[-1]["Position"] 
+        driver2_pos = driver2_laps.iloc[-1]["Position"] 
+
         # Plotting
         plt.suptitle(
             f"{session.event['EventName']} {session.event.year} {session.name}\n"
-            f"Lap Time Comparison: {driver1} vs {driver2}\n"
+            f"Lap Time Comparison: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
             f"{driver1}: {formatted_time1} | {driver2}: {formatted_time2}",
             fontsize=14
         )
@@ -450,6 +458,14 @@ def plot_track_dominance(session, driver1, driver2):
         ax_track.text(x, y, str(number), fontsize=8, color='black', ha='center', va='center',
                       bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2'))
 
+    # Get final race position for each driver
+    driver1_laps = session.laps.pick_drivers(driver1)
+    driver2_laps = session.laps.pick_drivers(driver2)
+
+    # Use the last lap to get their final position
+    driver1_pos = driver1_laps.iloc[-1]["Position"] 
+    driver2_pos = driver2_laps.iloc[-1]["Position"] 
+
     # Plotting
     ax_track.set_xticks([])
     ax_track.set_yticks([])
@@ -485,7 +501,7 @@ def plot_track_dominance(session, driver1, driver2):
     )
 
     fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                 f"Track Dominance: {driver1} vs {driver2}\n"
+                 f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
                  f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
                  fontsize=14)
 
