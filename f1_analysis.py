@@ -323,8 +323,8 @@ def plot_lap_comparison(session, driver1, driver2):
         driver2_laps = session.laps.pick_drivers(driver2)
 
         # Use the last lap to get their final position
-        driver1_pos = driver1_laps.iloc[-1]["Position"] if not driver1_laps.empty else "?"
-        driver2_pos = driver2_laps.iloc[-1]["Position"] if not driver2_laps.empty else "?"
+        driver1_pos = driver1_laps.iloc["Position"].dropna().min()
+        driver2_pos = driver2_laps.iloc["Position"].dropna().min()
 
         # Plotting
         plt.suptitle(
