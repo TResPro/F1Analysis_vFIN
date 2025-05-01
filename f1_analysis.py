@@ -47,7 +47,7 @@ def load_session(mode, year, grand_prix, session_type):
             "FP3": "FP3",
             "Sprint Qualifying": "Sprint Qualifying", 
             "Qualifying": "Qualifying",
-            "Sprint Race": "Sprint Race",
+            "Sprint Race": "Sprint",
             "Race": "Race"
         }
         if not all([year, grand_prix, session_type]):
