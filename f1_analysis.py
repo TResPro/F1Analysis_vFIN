@@ -317,19 +317,30 @@ def plot_lap_comparison(session, driver1, driver2):
         axs[2].grid(True, linestyle="--", alpha=0.5)
         axs[2].set_xlabel("Distance (%)")
 
-        # Extract final position
-        results = session.results
-        driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
-        driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
+        if session.session_type.lower() == 'qualifying':
+            # Extract final position
+            results = session.results
+            driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
+            driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
 
-        # Plotting
-        plt.suptitle(
-            f"{session.event['EventName']} {session.event.year} {session.name}\n"
-            f"Lap Time Comparison: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
-            f"{driver1}: {formatted_time1} | {driver2}: {formatted_time2}",
-            fontsize=14
-        )
-        plt.tight_layout()
+            # Plotting
+            plt.suptitle(
+                f"{session.event['EventName']} {session.event.year} {session.name}\n"
+                f"Lap Time Comparison: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
+                f"{driver1}: {formatted_time1} | {driver2}: {formatted_time2}",
+                fontsize=14
+            )
+            plt.tight_layout()
+
+        else:
+            # Plotting
+            plt.suptitle(
+                f"{session.event['EventName']} {session.event.year} {session.name}\n"
+                f"Lap Time Comparison: {driver1} vs {driver2}\n"
+                f"{driver1}: {formatted_time1} | {driver2}: {formatted_time2}",
+                fontsize=14
+            )
+            plt.tight_layout()
 
     return fig
 
@@ -494,12 +505,20 @@ def plot_track_dominance(session, driver1, driver2):
         labelspacing=1.2
     )
 
-    fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                 f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
-                 f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
-                 fontsize=14)
+    if session.session_type.lower() == 'qualifying':
+        fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
+                    f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
+                    f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
+                    fontsize=14)
 
-    plt.tight_layout()
+        plt.tight_layout()
+
+    else:
+        fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
+                    f"Track Dominance: {driver1} vs {driver2}\n"
+                    f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
+                    fontsize=14)
+
     return fig
 
 
