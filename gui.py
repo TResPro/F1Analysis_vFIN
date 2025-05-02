@@ -76,7 +76,7 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
 
 # Start Streamlit App
 def run_streamlit_app():
-    st.set_page_config(page_title="F1 Telemetry Analyzer", layout="centered")
+    st.set_page_config(page_title="F1 Analysis", layout="centered")
 
     # Sidebar for How to Use
     with st.sidebar:
@@ -94,7 +94,8 @@ def run_streamlit_app():
         st.markdown("Made with passion for F1 fans.<br>📩Contact Me formulatelemetryinfo@gmail.com", unsafe_allow_html=True)
 
     # Main title
-    st.title("🏎️ F1 Telemetry Analyzer")
+    st.title("🏎️ F1 Analysis®")
+    st.subheader("Choose your race weekend, session, year, and drivers — then dive into the telemetry and start uncovering the secrets of speed!")
     st.markdown("---")
 
     # Centered form layout
