@@ -107,8 +107,8 @@ def run_streamlit_app():
                 color: #ccc;
             }
             hr {
-                margin-top: 5px;
-                margin-bottom: 5px;
+                margin-top: 2px;
+                margin-bottom: 2px;
             }
         </style>
         <h1 class="title">🏎️ F1 Analysis®</h1>
