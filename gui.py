@@ -95,7 +95,8 @@ def run_streamlit_app():
 
     # Main title
     st.title("🏎️ F1 Analysis®")
-    st.markdown("Choose your race weekend, session, year, and drivers — then dive into the telemetry and start uncovering the secrets of speed!<br> ---", unsafe_allow_html=True)
+    st.subheader("Choose your race weekend, session, year, and drivers — then dive into the telemetry and start uncovering the secrets of speed!")
+    st.markdown("---")
 
     # Centered form layout
     st.markdown("## Select Session Details", unsafe_allow_html=True)
