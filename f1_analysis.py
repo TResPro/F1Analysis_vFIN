@@ -54,23 +54,22 @@ def load_session(mode, year, grand_prix, session_type):
 
         if not all([year, grand_prix, session_type]):
             return None
-
+        
+        #Check if the Grand Prix exists in that year
+        event = fastf1.get_event(int(year), grand_prix)
+        if event.Country != grand_prix and event.Location != grand_prix:
+            st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
+            return None
+        
+        # Check if session was held in that weekend
         try:
-            #Check if the Grand Prix exists in that year
-            event = fastf1.get_event(int(year), grand_prix)
-
-            if event.Country != grand_prix and event.Location != grand_prix:
-                st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
-                return None
-
-            # Check if session was held in that weekend
             session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
             session.load()
 
             return session
 
         except Exception as e:
-            st.warning(f"Error loading session: {e}")
+            st.warning(f"{session_type} session was not held during the {grand_prix} race weekend in {year}.")
             return None
 
     return None
