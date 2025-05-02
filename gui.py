@@ -95,7 +95,7 @@ def run_streamlit_app():
 
     # Main title
     st.title("🏎️ F1 Analysis®")
-    st.caption("Choose your race weekend, session, year, and drivers — then dive into the telemetry and start uncovering the secrets of speed!")
+    st.write("Choose your race weekend, session, year, and drivers — then dive into the telemetry and start uncovering the secrets of speed!")
     st.markdown("---")
 
     # Centered form layout
