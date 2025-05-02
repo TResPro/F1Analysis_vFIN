@@ -317,7 +317,7 @@ def plot_lap_comparison(session, driver1, driver2):
         axs[2].grid(True, linestyle="--", alpha=0.5)
         axs[2].set_xlabel("Distance (%)")
 
-        if session.session_type.lower() == 'qualifying':
+        if session.name.lower() == 'qualifying':
             # Extract final position
             results = session.results
             driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
@@ -505,7 +505,7 @@ def plot_track_dominance(session, driver1, driver2):
         labelspacing=1.2
     )
 
-    if session.session_type.lower() == 'qualifying':
+    if session.name.lower() == 'qualifying':
         fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
                     f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
                     f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
