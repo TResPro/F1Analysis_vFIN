@@ -317,7 +317,7 @@ def plot_lap_comparison(session, driver1, driver2):
         axs[2].grid(True, linestyle="--", alpha=0.5)
         axs[2].set_xlabel("Distance (%)")
 
-         # Extract final position
+        # Extract final position
         results = session.results
         driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
         driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
@@ -454,13 +454,11 @@ def plot_track_dominance(session, driver1, driver2):
         ax_track.text(x, y, str(number), fontsize=8, color='black', ha='center', va='center',
                       bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2'))
 
-    # Get final race position for each driver
-    driver1_laps = session.laps.pick_drivers(driver1)
-    driver2_laps = session.laps.pick_drivers(driver2)
 
-    # Use the last lap to get their final position
-    driver1_pos = driver1_laps.iloc[-1]["Position"] 
-    driver2_pos = driver2_laps.iloc[-1]["Position"] 
+    # Extract final position
+    results = session.results
+    driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
+    driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
 
     # Plotting
     ax_track.set_xticks([])
