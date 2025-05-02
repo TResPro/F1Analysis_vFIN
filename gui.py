@@ -104,7 +104,6 @@ def run_streamlit_app():
                 margin-top: 0px;
                 margin-bottom: 10px;
                 font-size: 18px;
-                color: #ccc;
             }
             hr {
                 margin-top: 2px;
