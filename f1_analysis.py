@@ -69,7 +69,7 @@ def load_session(mode, year, grand_prix, session_type):
             return session
 
         except Exception as e:
-            st.warning(f"{session_type} session was not held during the {grand_prix} race weekend in {year}.")
+            st.warning(f"{session_type} session **was not held** during the {grand_prix} race weekend in {year}.")
             return None
 
     return None
@@ -317,18 +317,15 @@ def plot_lap_comparison(session, driver1, driver2):
         axs[2].grid(True, linestyle="--", alpha=0.5)
         axs[2].set_xlabel("Distance (%)")
 
-        # Get final race position for each driver
-        driver1_laps = session.laps.pick_drivers(driver1)
-        driver2_laps = session.laps.pick_drivers(driver2)
-
-        # Use the last lap to get their final position
-        driver1_pos = driver1_laps.iloc["Position"].dropna().iloc[0]
-        driver2_pos = driver2_laps.iloc["Position"].dropna().iloc[0]
+         # Extract final position
+        results = session.results
+        pos1 = results.loc[driver1]['Position']
+        pos2 = results.loc[driver2]['Position']
 
         # Plotting
         plt.suptitle(
             f"{session.event['EventName']} {session.event.year} {session.name}\n"
-            f"Lap Time Comparison: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
+            f"Lap Time Comparison: {driver1} (P{int(pos1)}) vs {driver2} (P{int(pos2)})\n"
             f"{driver1}: {formatted_time1} | {driver2}: {formatted_time2}",
             fontsize=14
         )
