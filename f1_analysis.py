@@ -319,13 +319,13 @@ def plot_lap_comparison(session, driver1, driver2):
 
          # Extract final position
         results = session.results
-        pos1 = results.loc[driver1]['Position']
-        pos2 = results.loc[driver2]['Position']
+        driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
+        driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
 
         # Plotting
         plt.suptitle(
             f"{session.event['EventName']} {session.event.year} {session.name}\n"
-            f"Lap Time Comparison: {driver1} (P{int(pos1)}) vs {driver2} (P{int(pos2)})\n"
+            f"Lap Time Comparison: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
             f"{driver1}: {formatted_time1} | {driver2}: {formatted_time2}",
             fontsize=14
         )
