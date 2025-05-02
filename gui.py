@@ -94,9 +94,29 @@ def run_streamlit_app():
         st.markdown("Made with passion for F1 fans.<br>📩Contact Me formulatelemetryinfo@gmail.com", unsafe_allow_html=True)
 
     # Main title
-    st.title("🏎️ F1 Analysis®")
-    st.write("Choose your race weekend, session, year, and drivers — then dive into the telemetry and start uncovering the secrets of speed!")
-    st.markdown("---")
+    st.markdown(
+        """
+        <style>
+            .title {
+                margin-bottom: 0px;
+            }
+            .subtitle {
+                margin-top: 0px;
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #ccc;
+            }
+            hr {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+        </style>
+        <h1 class="title">🏎️ F1 Analysis®</h1>
+        <p class="subtitle">Choose your race weekend, session, year, and drivers — then dive into the telemetry and start uncovering the secrets of speed!</p>
+        <hr>
+        """,
+        unsafe_allow_html=True
+    )
 
     # Centered form layout
     st.markdown("## Select Session Details", unsafe_allow_html=True)
