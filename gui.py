@@ -145,7 +145,7 @@ def run_streamlit_app():
 
         # Button in the form
         #submitted = st.form_submit_button("🚀 Load Session")
-        _, center_col, _ = st.columns([2, 1, 2])
+        _, center_col, _ = st.columns([1, 1, 1])
         with center_col:
             submitted = st.form_submit_button("🚀 Load Session", use_container_width=True)
     if submitted:
