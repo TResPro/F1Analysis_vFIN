@@ -121,11 +121,11 @@ def plot_stint_comparison(session, drivers, team_colors):
         offset = 0.15  # offset to separate overlapping lines
         for pit_exit in pit_exit_laps:
             pit_lap_counts[pit_exit] += 1  # Count pit stops on this lap
-            shift = (pit_lap_counts[pit_exit] - 1) * offset  # Adjust position
+            shift = (pit_lap_counts[pit_exit] - 1) * offset 
             
             ax.axvline(x=pit_exit + shift, color=color, linestyle="-.", alpha=0.8, linewidth=1)
 
-    # Warning
+    # Warning safety car through pit lane
     if pit_stops > 3:
         st.warning('A Safety Car through the pit lane could be present, be careful about pit stop count.')
 
@@ -146,6 +146,7 @@ def plot_stint_comparison(session, drivers, team_colors):
 def plot_lap_time_distribution(session, team_colors):
     plt.style.use("dark_background")
     
+    # Select and order laps
     laps = session.laps.pick_quicklaps()
     transformed_laps = laps.copy()
     transformed_laps.loc[:, "LapTime (s)"] = laps["LapTime"].dt.total_seconds()
@@ -175,7 +176,7 @@ def plot_lap_time_distribution(session, team_colors):
         boxprops=dict(edgecolor="white"),
         medianprops=dict(color="grey"),
         capprops=dict(color="white"),
-        ax=ax  # Check if plot is drawn on the correct axis
+        ax=ax 
     )
 
     ax.set_title(f"{session.event['EventName']} {session.event.year} {session.name}\n"
@@ -345,6 +346,7 @@ def plot_lap_comparison(session, driver1, driver2):
                         ha='center', va='bottom',
                         fontsize=9, fontweight="bold", color='white')
 
+        # Can access final position only in qualifying
         if session.name.lower() == 'qualifying'or session.name.lower() == 'sprint qualifying':
             # Extract final position
             results = session.results

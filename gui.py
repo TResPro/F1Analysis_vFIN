@@ -77,7 +77,6 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
 
         st.success("✅ All plots generated successfully!")
 
-
 # Start Streamlit App
 def run_streamlit_app():
     st.set_page_config(page_title="F1 Analysis", layout="centered")
