@@ -144,7 +144,10 @@ def run_streamlit_app():
             driver2 = st.text_input("Driver 2", placeholder="e.g., LEC")
 
         # Button in the form
-        submitted = st.form_submit_button("🚀 Load Session")
+        #submitted = st.form_submit_button("🚀 Load Session")
+        _, center_col, _ = st.columns([2, 1, 2])
+        with center_col:
+            submitted = st.form_submit_button("🚀 Load Session")
     if submitted:
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 

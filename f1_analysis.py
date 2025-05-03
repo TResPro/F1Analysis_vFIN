@@ -174,7 +174,7 @@ def plot_lap_time_distribution(session, team_colors):
         palette=team_palette,
         whiskerprops=dict(color="white"),
         boxprops=dict(edgecolor="white"),
-        medianprops=dict(color="grey"),
+        medianprops=dict(color="white"),
         capprops=dict(color="white"),
         ax=ax 
     )
