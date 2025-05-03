@@ -123,8 +123,9 @@ def run_streamlit_app():
     # Button
     st.markdown("""
         <style>
-            .custom-load-button button {
-                padding-left: 2px !important;
+            .custom-load-button button span {
+                position: relative;
+                left: -2px;
             }
         </style>
     """, unsafe_allow_html=True)
