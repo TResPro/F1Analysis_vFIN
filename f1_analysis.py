@@ -334,13 +334,13 @@ def plot_lap_comparison(session, driver1, driver2):
             if i < 2:
                 ax.axvline(x=sector1_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
                 ax.axvline(x=sector2_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-                ax.text(sector1_dist, label_y_pos[i]*0.95, "S2", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
-                ax.text(sector2_dist, label_y_pos[i]*0.95, "S3", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector1_dist+50, label_y_pos[i]*0.95, "S2", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector2_dist+50, label_y_pos[i]*0.95, "S3", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
             else:
                 ax.axvline(x=sector1_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
                 ax.axvline(x=sector2_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-                ax.text(sector1_pct, label_y_pos[i]*0.95, "S2", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
-                ax.text(sector2_pct, label_y_pos[i]*0.95, "S3", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector1_pct+1, label_y_pos[i]*0.95, "S2", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector2_pct+1, label_y_pos[i]*0.95, "S3", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
 
         if session.name.lower() == 'qualifying'or session.name.lower() == 'sprint qualifying':
             # Extract final position
