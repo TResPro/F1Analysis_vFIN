@@ -321,45 +321,19 @@ def plot_lap_comparison(session, driver1, driver2):
         sector1_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"]].iloc[-1]["Distance"]
         sector2_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"] + lapdata1["Sector2Time"]].iloc[-1]["Distance"]
 
-        sector1_pct = sector1_dist / lap1["Distance"].max() * 100
-        sector2_pct = sector2_dist / lap1["Distance"].max() * 100
+        axs[0].axvline(x=sector1_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+        axs[0].axvline(x=sector2_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
 
-        label_y_pos = {
-            0: axs[0].get_ylim()[1],
-            1: axs[1].get_ylim()[1],
-            2: axs[2].get_ylim()[1],
-        }
-
-    for i, ax in enumerate(axs):
-        if i < 2:
-            ax.axvline(x=sector1_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-            ax.axvline(x=sector2_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-
-            ax.annotate("S2",
-                        xy=(sector1_dist, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -5), textcoords='offset points',
-                        ha='center', va='top',
+        axs[0].annotate("S2",
+                        xy=(sector1_dist, 1), xycoords=('data', 'axes fraction'),
+                        xytext=(0, 5), textcoords='offset points',
+                        ha='center', va='bottom',
                         fontsize=9, fontweight="bold", color='white')
 
-            ax.annotate("S3",
-                        xy=(sector2_dist, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -5), textcoords='offset points',
-                        ha='center', va='top',
-                        fontsize=9, fontweight="bold", color='white')
-        else:
-            ax.axvline(x=sector1_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-            ax.axvline(x=sector2_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-
-            ax.annotate("S2",
-                        xy=(sector1_pct, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -5), textcoords='offset points',
-                        ha='center', va='top',
-                        fontsize=9, fontweight="bold", color='white')
-
-            ax.annotate("S3",
-                        xy=(sector2_pct, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -5), textcoords='offset points',
-                        ha='center', va='top',
+        axs[0].annotate("S3",
+                        xy=(sector2_dist, 1), xycoords=('data', 'axes fraction'),
+                        xytext=(0, 5), textcoords='offset points',
+                        ha='center', va='bottom',
                         fontsize=9, fontweight="bold", color='white')
 
         if session.name.lower() == 'qualifying'or session.name.lower() == 'sprint qualifying':
