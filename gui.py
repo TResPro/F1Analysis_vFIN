@@ -125,7 +125,7 @@ def run_streamlit_app():
         <style>
             .custom-load-button button span {
                 position: relative;
-                left: -2px;
+                left: -10px;
             }
         </style>
     """, unsafe_allow_html=True)
