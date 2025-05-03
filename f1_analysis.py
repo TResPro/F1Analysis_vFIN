@@ -339,8 +339,8 @@ def plot_lap_comparison(session, driver1, driver2):
             else:
                 ax.axvline(x=sector1_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
                 ax.axvline(x=sector2_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-                ax.text(sector1_pct+0.1, label_y_pos[i]*0.95, "S2", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
-                ax.text(sector2_pct+0.1, label_y_pos[i]*0.95, "S3", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector1_pct, label_y_pos[i]*0.95, "S2", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector2_pct, label_y_pos[i]*0.95, "S3", fontweight="bold", color='white', fontsize=9, ha='left', va='top')
 
         if session.name.lower() == 'qualifying'or session.name.lower() == 'sprint qualifying':
             # Extract final position
@@ -479,7 +479,7 @@ def plot_track_dominance(session, driver1, driver2):
 
     # Start marker
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
-    ax_track.text(lap1['X'].iloc[0], lap1['Y'].iloc[0], "Start", fontsize=9, ha='left', va='bottom', color='white', zorder=11)
+    ax_track.text(lap1['X'].iloc[0], lap1['Y'].iloc[0], "Start", fontsize=9, fontweight='bold', ha='left', va='bottom', color='white', zorder=11)
 
     # Corners
     circuit_info = session.get_circuit_info()
@@ -502,7 +502,7 @@ def plot_track_dominance(session, driver1, driver2):
     ax_track.plot(x_s1, y_s1, marker='|', color='white', markersize=10, zorder=10)
     ax_track.plot(x_s2, y_s2, marker='|', color='white', markersize=10, zorder=10)
 
-    ax_track.text(x_s1 + 5, y_s1 + 5, "S2", color="white", fontsize=10, fontweight='bold', zorder=16)
+    ax_track.text(x_s1 + 5, y_s1 + 5, "S2", color="white", fontsize=10, fontweight='bold', zorder=30)
     ax_track.text(x_s2 + 5, y_s2 + 5, "S3", color="white", fontsize=10, fontweight='bold', zorder=16)
 
     # Extract final position
