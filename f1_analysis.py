@@ -317,7 +317,32 @@ def plot_lap_comparison(session, driver1, driver2):
         axs[2].grid(True, linestyle="--", alpha=0.5)
         axs[2].set_xlabel("Distance (%)")
 
-        if session.name.lower() == 'qualifying':
+        # Sector markers
+        sector1_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"]].iloc[-1]["Distance"]
+        sector2_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"] + lapdata1["Sector2Time"]].iloc[-1]["Distance"]
+
+        sector1_pct = sector1_dist / lap1["Distance"].max() * 100
+        sector2_pct = sector2_dist / lap1["Distance"].max() * 100
+
+        label_y_pos = {
+            0: axs[0].get_ylim()[1],
+            1: axs[1].get_ylim()[1],
+            2: axs[2].get_ylim()[1],
+        }
+
+        for i, ax in enumerate(axs):
+            if i < 2:
+                ax.axvline(x=sector1_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+                ax.axvline(x=sector2_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+                ax.text(sector1_dist, label_y_pos[i]*0.95, "S2", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector2_dist, label_y_pos[i]*0.95, "S3", color='white', fontsize=9, ha='left', va='top')
+            else:
+                ax.axvline(x=sector1_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+                ax.axvline(x=sector2_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+                ax.text(sector1_pct, label_y_pos[i]*0.95, "S2", color='white', fontsize=9, ha='left', va='top')
+                ax.text(sector2_pct, label_y_pos[i]*0.95, "S3", color='white', fontsize=9, ha='left', va='top')
+                
+        if session.name.lower() == 'qualifying'or session.name.lower() == 'sprint qualifying':
             # Extract final position
             results = session.results
             driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
@@ -505,7 +530,7 @@ def plot_track_dominance(session, driver1, driver2):
         labelspacing=1.2
     )
 
-    if session.name.lower() == 'qualifying':
+    if session.name.lower() == 'qualifying' or session.name.lower() == 'sprint qualifying':
         fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
                     f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
                     f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
