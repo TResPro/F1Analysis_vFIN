@@ -337,13 +337,13 @@ def plot_lap_comparison(session, driver1, driver2):
 
             ax.annotate("S2",
                         xy=(sector1_dist, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -20), textcoords='offset points',
+                        xytext=(0, -5), textcoords='offset points',
                         ha='center', va='top',
                         fontsize=9, fontweight="bold", color='white')
 
             ax.annotate("S3",
                         xy=(sector2_dist, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -20), textcoords='offset points',
+                        xytext=(0, -5), textcoords='offset points',
                         ha='center', va='top',
                         fontsize=9, fontweight="bold", color='white')
         else:
@@ -352,13 +352,13 @@ def plot_lap_comparison(session, driver1, driver2):
 
             ax.annotate("S2",
                         xy=(sector1_pct, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -20), textcoords='offset points',
+                        xytext=(0, -5), textcoords='offset points',
                         ha='center', va='top',
                         fontsize=9, fontweight="bold", color='white')
 
             ax.annotate("S3",
                         xy=(sector2_pct, 0), xycoords=('data', 'axes fraction'),
-                        xytext=(0, -20), textcoords='offset points',
+                        xytext=(0, -5), textcoords='offset points',
                         ha='center', va='top',
                         fontsize=9, fontweight="bold", color='white')
 
