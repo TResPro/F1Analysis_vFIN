@@ -147,7 +147,7 @@ def run_streamlit_app():
         #submitted = st.form_submit_button("🚀 Load Session")
         _, center_col, _ = st.columns([2, 1, 2])
         with center_col:
-            submitted = st.form_submit_button("🚀 Load Session")
+            submitted = st.form_submit_button("🚀 Load Session", use_container_width=True)
     if submitted:
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 
