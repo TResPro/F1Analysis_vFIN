@@ -120,15 +120,6 @@ def run_streamlit_app():
         unsafe_allow_html=True
     )
 
-    # Button
-    st.markdown("""
-        <style>
-            .custom-load-button button span {
-                position: relative;
-                left: -10px;
-            }
-        </style>
-    """, unsafe_allow_html=True)
 
     # Centered form layout
     st.markdown("## Select Session Details", unsafe_allow_html=True)
@@ -157,9 +148,8 @@ def run_streamlit_app():
         #submitted = st.form_submit_button("🚀 Load Session")
         _, center_col, _ = st.columns([1, 1, 1])
         with center_col:
-            st.markdown('<div class="custom-load-button">', unsafe_allow_html=True)
             submitted = st.form_submit_button("🚀 Load Session", use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+
     if submitted:
         on_load_session(mode, year, grand_prix, session_type, driver1, driver2)
 
