@@ -321,9 +321,18 @@ def plot_lap_comparison(session, driver1, driver2):
         sector1_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"]].iloc[-1]["Distance"]
         sector2_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"] + lapdata1["Sector2Time"]].iloc[-1]["Distance"]
 
-        axs[0].axvline(x=sector1_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
-        axs[0].axvline(x=sector2_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+        sector1_pct = sector1_dist / lap1["Distance"].max() * 100
+        sector2_pct = sector2_dist / lap1["Distance"].max() * 100
 
+        for i, ax in enumerate(axs):
+            if i < 2:
+                ax.axvline(x=sector1_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+                ax.axvline(x=sector2_dist, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+            else:
+                ax.axvline(x=sector1_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+                ax.axvline(x=sector2_pct, color='white', linestyle='--', linewidth=1.2, alpha=0.8)
+
+        # Sector labels only on top of the first plot
         axs[0].annotate("S2",
                         xy=(sector1_dist, 1), xycoords=('data', 'axes fraction'),
                         xytext=(0, 5), textcoords='offset points',
