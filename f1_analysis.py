@@ -176,7 +176,7 @@ def plot_lap_time_distribution(session, team_colors):
         boxprops=dict(edgecolor="white"),
         medianprops=dict(color="grey"),
         capprops=dict(color="white"),
-        flierprops=dict(marker='o', markersize=5, markerfacecolor='white', markeredgecolor='white'),
+        flierprops=dict(marker='o', markersize=5, markeredgecolor="grey"),
         ax=ax 
     )
 
