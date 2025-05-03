@@ -499,8 +499,8 @@ def plot_track_dominance(session, driver1, driver2):
     x_s2 = lap1_interp["X"](sector2_dist)
     y_s2 = lap1_interp["Y"](sector2_dist)
 
-    ax_track.plot([x_s1 - 1, x_s1 + 1], [y_s1, y_s1], color="white", linewidth=1.5, zorder=15)
-    ax_track.plot([x_s2 - 1, x_s2 + 1], [y_s2, y_s2], color="white", linewidth=1.5, zorder=15)
+    ax_track.vlines(x_s1, y_s1 - 5, y_s1 + 5, color="white", linewidth=1.2, zorder=15)
+    ax_track.vlines(x_s2, y_s2 - 5, y_s2 + 5, color="white", linewidth=1.2, zorder=15)
 
     ax_track.text(x_s1 + 3, y_s1 + 3, "S2", color="white", fontsize=10, fontweight='bold', zorder=16)
     ax_track.text(x_s2 + 3, y_s2 + 3, "S3", color="white", fontsize=10, fontweight='bold', zorder=16)
