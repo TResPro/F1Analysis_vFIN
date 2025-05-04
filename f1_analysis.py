@@ -89,6 +89,10 @@ def plot_stint_comparison(session, drivers, team_colors):
     
     for driver in drivers:
         laps = session.laps.pick_drivers(driver)
+        
+        if laps is None or laps.empty:
+            st.warning(f"{driver} did not participate in the session.")
+            continue
 
         team = laps.iloc[0]["Team"]  
         color = team_colors.get(team, "white")  
@@ -457,6 +461,7 @@ def plot_track_dominance(session, driver1, driver2):
         lap1_interp[var] = interp1
         lap2_interp[var] = interp2
 
+    # Initialize figure
     fig = plt.figure(figsize=(16, 9), dpi=1000)
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
     ax_track = fig.add_subplot(spec[0])
