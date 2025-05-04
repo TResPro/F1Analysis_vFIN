@@ -92,7 +92,7 @@ def plot_stint_comparison(session, drivers, team_colors):
 
         # Check if driver attended the session
         if laps is None or laps.empty:
-            st.warning(f"**{driver}** did not participate in the session.")
+            st.warning(f"**{driver}** did not participate in the {session.name}.")
             continue
 
         team = laps.iloc[0]["Team"]  
@@ -251,10 +251,10 @@ def plot_lap_comparison(session, driver1, driver2):
 
     # Be sure drivers participated to the session
     if lapdata1 is None:
-        st.warning(f"No laps completed for **{driver1}**, probably crash or substituted by a rookie. Cannot display lap comparison with {driver2}.")
+        st.warning(f"No laps completed for **{driver1}** in {session.name}, probably crash or substituted by a rookie. Cannot display lap comparison with {driver2}.")
         return None
     if lapdata2 is None:
-        st.warning(f"No laps completed for **{driver2}**, probably crash or substituted by a rookie. Cannot display lap comparison with {driver1}.")
+        st.warning(f"No laps completed for **{driver2}** in {session.name}, probably crash or substituted by a rookie. Cannot display lap comparison with {driver1}.")
         return None
     else:
         lap1 = lapdata1.get_telemetry().add_distance()
