@@ -436,7 +436,7 @@ def plot_track_dominance(session, driver1, driver2):
     lapdata1 = session.laps.pick_drivers(driver1).pick_fastest()
     lapdata2 = session.laps.pick_drivers(driver2).pick_fastest()
 
-        # Be sure drivers participated to the session
+    # Be sure drivers participated to the session
     if lapdata1 is None:
         st.warning(f"No laps completed for **{driver1}**, probably crash or substituted by a rookie. Cannot display lap comparison with {driver2}.")
         return None
@@ -570,7 +570,7 @@ def plot_track_dominance(session, driver1, driver2):
                         fontsize=14)
 
         plt.tight_layout()
-        return fig
+    return fig
 
 
 

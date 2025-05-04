@@ -68,8 +68,9 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_FP')
 
                 fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
-                show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_FP')
-
+                if fig is not None:
+                    show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_FP')
+                
                 fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
                 if fig is not None:
                     show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_FP')
