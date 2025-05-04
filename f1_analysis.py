@@ -426,6 +426,8 @@ def plot_max_speeds(session):
 # Plot 4: Track Dominance
 def plot_track_dominance(session, driver1, driver2):
     plt.style.use("dark_background")
+
+    # Pick fastst lap
     lapdata1 = session.laps.pick_drivers(driver1).pick_fastest()
     lapdata2 = session.laps.pick_drivers(driver2).pick_fastest()
 
@@ -442,9 +444,11 @@ def plot_track_dominance(session, driver1, driver2):
     lap1 = lap1[lap1['Distance'] <= max_distance]
     lap2 = lap2[lap2['Distance'] <= max_distance]
 
+    # Subdivide in n subsectors the track
     n_subsectors = 25
     sector_bounds = np.linspace(0, max_distance, n_subsectors + 1)
 
+    # Interpolate lap data
     lap1_interp = {}
     lap2_interp = {}
     for var in ['X', 'Y', 'Speed']:
@@ -453,7 +457,7 @@ def plot_track_dominance(session, driver1, driver2):
         lap1_interp[var] = interp1
         lap2_interp[var] = interp2
 
-    fig = plt.figure(figsize=(16, 9), dpi=300)
+    fig = plt.figure(figsize=(16, 9), dpi=1000)
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
     ax_track = fig.add_subplot(spec[0])
     ax_legend = fig.add_subplot(spec[1])
@@ -478,11 +482,13 @@ def plot_track_dominance(session, driver1, driver2):
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
     ax_track.text(lap1['X'].iloc[0], lap1['Y'].iloc[0], "Start", fontsize=9, fontweight='bold', ha='left', va='bottom', color='white', zorder=11)
 
+    # Corner numbers
     circuit_info = session.get_circuit_info()
     for _, corner in circuit_info.corners.iterrows():
         ax_track.text(corner["X"], corner["Y"], str(corner["Number"]), fontsize=8, color='black', ha='center', va='center',
                       bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2'))
 
+    # Start of sector marker
     sector1_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"]].iloc[-1]["Distance"]
     sector2_dist = lap1[lap1["Time"] <= (lapdata1["Sector1Time"] + lapdata1["Sector2Time"])].iloc[-1]["Distance"]
 
@@ -497,10 +503,12 @@ def plot_track_dominance(session, driver1, driver2):
     ax_track.text(x_s1 + 50, y_s1 + 50, "S2", color="white", fontsize=10, fontweight='bold', zorder=16)
     ax_track.text(x_s2 + 50, y_s2 + 50, "S3", color="white", fontsize=10, fontweight='bold', zorder=16)
 
+    # Extract final results
     results = session.results
     driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
     driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
 
+    # Plotting
     ax_track.set_xticks([])
     ax_track.set_yticks([])
     for spine in ax_track.spines.values():
@@ -534,6 +542,7 @@ def plot_track_dominance(session, driver1, driver2):
         labelspacing=1.2
     )
 
+    # Final position accessible only in qualifying sessions
     if session.name.lower() in ['qualifying', 'sprint qualifying']:
         fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
                      f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
