@@ -89,9 +89,9 @@ def plot_stint_comparison(session, drivers, team_colors):
     
     for driver in drivers:
         laps = session.laps.pick_drivers(driver)
-        
+
         if laps is None or laps.empty:
-            st.warning(f"{driver} did not participate in the session.")
+            st.warning(f"**{driver}** did not participate in the session.")
             continue
 
         team = laps.iloc[0]["Team"]  
