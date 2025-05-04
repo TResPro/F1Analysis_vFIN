@@ -438,10 +438,10 @@ def plot_track_dominance(session, driver1, driver2):
 
     # Be sure drivers participated to the session
     if lapdata1 is None:
-        st.warning(f"No laps completed for **{driver1}**, probably crash or substituted by a rookie. Cannot display lap comparison with {driver2}.")
+        st.warning(f"No laps completed for **{driver1}**, probably crash or substituted by a rookie. Cannot display track dominance comparison with {driver2}.")
         return None
     if lapdata2 is None:
-        st.warning(f"No laps completed for **{driver2}**, probably crash or substituted by a rookie. Cannot display lap comparison with {driver1}.")
+        st.warning(f"No laps completed for **{driver2}**, probably crash or substituted by a rookie. Cannot display track dominance comparison with {driver1}.")
         return None
     else:
 
