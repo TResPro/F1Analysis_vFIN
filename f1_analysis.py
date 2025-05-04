@@ -438,16 +438,13 @@ def plot_track_dominance(session, driver1, driver2):
     color_driver1 = TEAM_COLORS.get(driver1_team, 'gray')
     color_driver2 = TEAM_COLORS.get(driver2_team, 'gray')
 
-    # Synchronize distance for both drivers
     max_distance = min(lap1['Distance'].max(), lap2['Distance'].max())
     lap1 = lap1[lap1['Distance'] <= max_distance]
     lap2 = lap2[lap2['Distance'] <= max_distance]
 
-    # Define distance grid
     n_subsectors = 25
     sector_bounds = np.linspace(0, max_distance, n_subsectors + 1)
 
-    # Interpolate telemetry
     lap1_interp = {}
     lap2_interp = {}
     for var in ['X', 'Y', 'Speed']:
@@ -456,30 +453,24 @@ def plot_track_dominance(session, driver1, driver2):
         lap1_interp[var] = interp1
         lap2_interp[var] = interp2
 
-    # Create figure
     fig = plt.figure(figsize=(16, 9), dpi=300)
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], figure=fig)
     ax_track = fig.add_subplot(spec[0])
     ax_legend = fig.add_subplot(spec[1])
 
-    # Plot by subsectors
     for i in range(n_subsectors):
         d_start = sector_bounds[i]
         d_end = sector_bounds[i+1]
-        
-        # Fine grid inside subsector
-        fine_distance = np.linspace(d_start, d_end, 50)
+        fine_distance = np.linspace(d_start, d_end, 200)
 
-        # Average speed in this subsector
         avg_speed1 = lap1_interp['Speed'](fine_distance).mean()
         avg_speed2 = lap2_interp['Speed'](fine_distance).mean()
 
         faster_driver = driver1 if avg_speed1 > avg_speed2 else driver2
         color = color_driver1 if faster_driver == driver1 else color_driver2
 
-        # Coordinates
-        x = lap1_interp['X'](fine_distance) if faster_driver == driver1 else lap2_interp['X'](fine_distance)
-        y = lap1_interp['Y'](fine_distance) if faster_driver == driver1 else lap2_interp['Y'](fine_distance)
+        x = lap1_interp['X'](fine_distance)
+        y = lap1_interp['Y'](fine_distance)
 
         ax_track.plot(x, y, color=color, linewidth=2)
 
@@ -487,16 +478,11 @@ def plot_track_dominance(session, driver1, driver2):
     ax_track.plot(lap1['X'].iloc[0], lap1['Y'].iloc[0], marker='.', color='white', markersize=8, zorder=10)
     ax_track.text(lap1['X'].iloc[0], lap1['Y'].iloc[0], "Start", fontsize=9, fontweight='bold', ha='left', va='bottom', color='white', zorder=11)
 
-    # Corners
     circuit_info = session.get_circuit_info()
     for _, corner in circuit_info.corners.iterrows():
-        number = corner["Number"]
-        x = corner["X"]
-        y = corner["Y"]
-        ax_track.text(x, y, str(number), fontsize=8, color='black', ha='center', va='center',
+        ax_track.text(corner["X"], corner["Y"], str(corner["Number"]), fontsize=8, color='black', ha='center', va='center',
                       bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2'))
 
-    # Add sector markers on track
     sector1_dist = lap1[lap1["Time"] <= lapdata1["Sector1Time"]].iloc[-1]["Distance"]
     sector2_dist = lap1[lap1["Time"] <= (lapdata1["Sector1Time"] + lapdata1["Sector2Time"])].iloc[-1]["Distance"]
 
@@ -511,12 +497,10 @@ def plot_track_dominance(session, driver1, driver2):
     ax_track.text(x_s1 + 50, y_s1 + 50, "S2", color="white", fontsize=10, fontweight='bold', zorder=16)
     ax_track.text(x_s2 + 50, y_s2 + 50, "S3", color="white", fontsize=10, fontweight='bold', zorder=16)
 
-    # Extract final position
     results = session.results
     driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
     driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
 
-    # Plotting
     ax_track.set_xticks([])
     ax_track.set_yticks([])
     for spine in ax_track.spines.values():
@@ -524,7 +508,7 @@ def plot_track_dominance(session, driver1, driver2):
         spine.set_color('white')
         spine.set_linewidth(1.5)
 
-    ax_legend.axis('off')  # Hide axis
+    ax_legend.axis('off')
     lap_time1 = lapdata1["LapTime"].total_seconds()
     lap_time2 = lapdata2["LapTime"].total_seconds()
 
@@ -550,21 +534,20 @@ def plot_track_dominance(session, driver1, driver2):
         labelspacing=1.2
     )
 
-    if session.name.lower() == 'qualifying' or session.name.lower() == 'sprint qualifying':
+    if session.name.lower() in ['qualifying', 'sprint qualifying']:
         fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                    f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
-                    f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
-                    fontsize=14)
-
-        plt.tight_layout()
-
+                     f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
+                     f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
+                     fontsize=14)
     else:
         fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
-                    f"Track Dominance: {driver1} vs {driver2}\n"
-                    f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
-                    fontsize=14)
+                     f"Track Dominance: {driver1} vs {driver2}\n"
+                     f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
+                     fontsize=14)
 
+    plt.tight_layout()
     return fig
+
 
 
 if __name__ == "__main__":
