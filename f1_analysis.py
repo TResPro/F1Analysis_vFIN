@@ -98,6 +98,9 @@ def plot_stint_comparison(session, drivers, team_colors):
         team = laps.iloc[0]["Team"]  
         color = team_colors.get(team, "white")  
         final_position = laps.iloc[-1]["Position"]  
+        if final_position is None:
+            st.warning(f"**{driver}** did not finish the {session.name}.")
+            continue
         pit_stops = laps["PitInTime"].count()
         driver_positions[driver] = final_position
 
