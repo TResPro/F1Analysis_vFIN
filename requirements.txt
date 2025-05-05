@@ -6,3 +6,4 @@ scipy
 customtkinter
 Pillow
 streamlit
+pandas

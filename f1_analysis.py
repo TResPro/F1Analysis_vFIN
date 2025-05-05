@@ -12,6 +12,7 @@ import seaborn as sns
 from collections import defaultdict
 from scipy.interpolate import interp1d
 import streamlit as st
+import pandas as pd
 
 # Define team colors
 TEAM_COLORS = {
@@ -98,10 +99,10 @@ def plot_stint_comparison(session, drivers, team_colors):
         team = laps.iloc[0]["Team"]  
         color = team_colors.get(team, "white")  
         final_position = laps.iloc[-1]["Position"]  
-        if final_position is None:
+        if pd.isna(final_position):
             st.warning(f"**{driver}** did not finish the {session.name}.")
             continue
-        
+
         pit_stops = laps["PitInTime"].count()
         driver_positions[driver] = final_position
 
