@@ -523,11 +523,6 @@ def plot_track_dominance(session, driver1, driver2):
         ax_track.text(x_s1 + 50, y_s1 + 50, "S2", color="white", fontsize=10, fontweight='bold', zorder=16)
         ax_track.text(x_s2 + 50, y_s2 + 50, "S3", color="white", fontsize=10, fontweight='bold', zorder=16)
 
-        # Extract final results
-        results = session.results
-        driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
-        driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
-
         # Plotting
         ax_track.set_xticks([])
         ax_track.set_yticks([])
@@ -564,6 +559,10 @@ def plot_track_dominance(session, driver1, driver2):
 
         # Final position accessible only in qualifying sessions
         if session.name.lower() in ['qualifying', 'sprint qualifying']:
+            # Extract final results
+            results = session.results
+            driver1_pos = results.loc[results['Abbreviation'] == driver1, 'Position'].values[0]
+            driver2_pos = results.loc[results['Abbreviation'] == driver2, 'Position'].values[0]
             fig.suptitle(f"{session.event['EventName']} {session.event.year} {session.name}\n"
                         f"Track Dominance: {driver1} (P{int(driver1_pos)}) vs {driver2} (P{int(driver2_pos)})\n"
                         f"{driver1}: {format_time(lap_time1)} | {driver2}: {format_time(lap_time2)}",
