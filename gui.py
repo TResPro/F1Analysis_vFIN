@@ -22,10 +22,12 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_Q')
 
                 fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-                show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_Q')
+                if fig is not None:
+                    show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_Q')
 
                 fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
-                show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_Q')
+                if fig is not None:
+                    show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_Q')
 
                 fig = f1_analysis.plot_max_speeds(session)
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_Q')
@@ -35,10 +37,12 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_SQ')
 
                 fig = f1_analysis.plot_lap_comparison(session, driver1, driver2)
-                show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_SQ')
+                if fig is not None:
+                    show_fig_with_download('📈 Lap Time Comparison', fig, 'lap_time_comparison_SQ')
 
                 fig = f1_analysis.plot_track_dominance(session, driver1, driver2)
-                show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_SQ')
+                if fig is not None:
+                    show_fig_with_download('🏁 Track Dominance', fig, 'track_dominance_SQ')
 
                 fig = f1_analysis.plot_max_speeds(session)
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_SQ')
