@@ -140,7 +140,7 @@ def run_streamlit_app():
             grand_prix = st.selectbox(
                 "Select GP",
                 [
-                    "Australia", "Saudi Arabia", "Bahrain", "Japan", "China", "Miami", "Emilia Romagna",
+                    "Australia", "Saudi Arabia", "Bahrain", "Japan", "China", "Miami", "Imola",
                     "Monaco", "Canada", "Spain", "Austria", "Silverstone", "Hungary", "Belgium",
                     "Netherlands", "Italy", "Azerbaijan", "Singapore", "Austin", "Mexico",
                     "Brazil", "Las Vegas", "Qatar", "Abu Dhabi"
