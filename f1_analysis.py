@@ -66,11 +66,6 @@ def load_session(mode, year, grand_prix, session_type):
         try:
             session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
             session.load()
-
-            if session.load() is None:
-                st.warning(f"{grand_prix} **did not host yet** a race weekend in {year}.")
-                return None
-
             return session
 
         except Exception as e:
