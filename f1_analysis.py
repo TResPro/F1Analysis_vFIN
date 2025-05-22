@@ -57,9 +57,8 @@ def load_session(mode, year, grand_prix, session_type):
         if not all([year, grand_prix, session_type]):
             return None
 
-        try:
-            event = fastf1.get_event(int(year), grand_prix)
-        except Exception:
+        event = fastf1.get_event(int(year), grand_prix)
+        if event.Country != grand_prix and event.Location != grand_prix:
             st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
             return None
 
