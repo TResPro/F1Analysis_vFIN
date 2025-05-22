@@ -68,7 +68,7 @@ def load_session(mode, year, grand_prix, session_type):
             session.load()
 
             if session.load() is None:
-                st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
+                st.warning(f"{grand_prix} **did not host yet** a race weekend in {year}.")
                 return None
             else:
                 return session
