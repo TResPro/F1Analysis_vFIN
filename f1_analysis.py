@@ -43,41 +43,41 @@ TEAM_COLORS = {
 
 # Load F1 session data dynamically from GUI selections
 def load_session(mode, year, grand_prix, session_type):
-    if mode == "Grand Prix":
-        session_mapping = {
-            "FP1": "FP1",
-            "FP2": "FP2",
-            "FP3": "FP3",
-            "Sprint Qualifying": "Sprint Qualifying",
-            "Qualifying": "Qualifying",
-            "Sprint Race": "Sprint",
-            "Race": "Race"
-        }
+    if mode != "Grand Prix":
+        return None
 
-        if not all([year, grand_prix, session_type]):
-            return None
+    session_mapping = {
+        "FP1": "FP1",
+        "FP2": "FP2",
+        "FP3": "FP3",
+        "Sprint Qualifying": "Sprint Qualifying",
+        "Qualifying": "Qualifying",
+        "Sprint Race": "Sprint",
+        "Race": "Race"
+    }
 
+    if not all([year, grand_prix, session_type]):
+        return None
+
+    try:
         event = fastf1.get_event(int(year), grand_prix)
-        if event.Country != grand_prix and event.Location != grand_prix:
-            st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
-            return None
+    except Exception:
+        st.warning(f"Could not find any event for '{grand_prix}' in {year}.")
+        return None
 
-        # Check if the event is scheduled in the future
-        if event.EventDate > datetime.now():
-            st.warning(f"The {grand_prix} Grand Prix in {year} **has not occurred yet**. Please try again after the event.")
-            return None
+    if event.Country != grand_prix and event.Location != grand_prix:
+        st.warning(f"{grand_prix} **did not host** a race weekend in {year}.")
+        return None
 
-        # Try to load the session
-        try:
-            session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
-            session.load()
-            return session
+    # Try to load the session directly
+    try:
+        session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
+        session.load()
+        return session
 
-        except Exception:
-            st.warning(f"{session_type} session **was not held** during the {grand_prix} race weekend in {year}.")
-            return None
-
-    return None
+    except Exception as e:
+        st.warning(f"{session_type} session **is not available yet** or was not held during the {grand_prix} GP in {year}.")
+        return None
 
 '''------------------------------------------------------------------------------------'''
 
