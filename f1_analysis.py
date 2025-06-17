@@ -73,10 +73,16 @@ def load_session(mode, year, grand_prix, session_type):
     try:
         session = fastf1.get_session(int(year), grand_prix, session_mapping[session_type])
         session.load()
+
+        # Check if data is available
+        if session.laps.empty:
+            st.warning(f"{session_type} session **is not available yet** or was not held during the {grand_prix} GP in {year}.")
+            return None
+
         return session
 
     except Exception as e:
-        st.warning(f"{session_type} session **is not available yet** or was not held during the {grand_prix} GP in {year}.")
+        st.warning(f"{session_type} session **could not be loaded**. Reason: {e}")
         return None
 
 '''------------------------------------------------------------------------------------'''
