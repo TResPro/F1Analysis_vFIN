@@ -160,24 +160,43 @@ def plot_free_practice_ranking(session):
 def plot_race_ranking(session):
     plt.style.use("dark_background") 
 
-    # Filter out in-laps or laps without a valid time
+    # 1) Get the overall fastest lap for the title
     valid_laps = session.laps.dropna(subset=["LapTime"])
+    best_lap = valid_laps.loc[valid_laps["LapTime"].idxmin()]
+    best_driver = best_lap["Driver"]
+    best_lap_time = best_lap["LapTime"]
     
-    # Pick fastest laps by driver
-    fastest_laps = valid_laps.loc[valid_laps.groupby("Driver")["LapTime"].idxmin()]
-    fastest_laps = fastest_laps.sort_values("LapTime")
-
-    drivers = fastest_laps["Driver"]
-    teams = fastest_laps["Team"]
-    delta_time = (fastest_laps["LapTime"] - fastest_laps["LapTime"].min()).dt.total_seconds()
-    
-    # Get best lap time and driver
-    best_lap_time = fastest_laps["LapTime"].min()
-    best_driver = fastest_laps.loc[fastest_laps["LapTime"].idxmin(), "Driver"]
-
-    # Format time to m:ss.sss
     total_seconds = best_lap_time.total_seconds()
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
+
+    # 2) Get the race results (final classification)
+    results = session.results.sort_values("Position")
+    
+    # The winner is the first row after sorting by Position
+    winner_time = results.iloc[0]["Time"]
+    
+    drivers = []
+    teams = []
+    delta_times = []
+    text_labels = []
+
+    for _, row in results.iterrows():
+        drivers.append(row["Abbreviation"])
+        teams.append(row["TeamName"])
+        
+        # Check if driver has a valid total Time (meaning they finished on the lead lap)
+        if pd.notna(row["Time"]):
+            delta_sec = (row["Time"] - winner_time).total_seconds()
+            delta_times.append(delta_sec)
+            
+            if delta_sec == 0:
+                text_labels.append("Winner")
+            else:
+                text_labels.append(f"+{delta_sec:.3f}s")
+        else:
+            # Lapped cars or DNFs do not have a total time we can subtract
+            delta_times.append(0.0) # Set bar length to 0
+            text_labels.append(str(row["Status"])) # Will show "+1 Lap", "DNF", etc.
 
     # Create figure and axis
     fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
@@ -186,17 +205,17 @@ def plot_race_ranking(session):
     colors = [TEAM_COLORS.get(team, "gray") for team in teams]
 
     # Plotting
-    bars = ax.barh(drivers, delta_time, color=colors)
+    bars = ax.barh(drivers, delta_times, color=colors)
     
     # Add delta text next to each bar
-    for bar, delta in zip(bars, delta_time):
-        # Format the text: 'Fastest' for the best lap, '+X.XXXs' for the rest
-        text_label = f"+{delta:.3f}s" if delta > 0 else "Fastest"
+    for bar, label, delta in zip(bars, text_labels, delta_times):
+        # Position the text just to the right of the bar (or near 0 for DNFs/lapped cars)
+        x_offset = bar.get_width() + 0.5 if delta > 0 else 0.5
         
         ax.text(
-            bar.get_width() + 0.05,              # Slightly to the right of the bar
-            bar.get_y() + bar.get_height() / 2,  # Centered vertically on the bar
-            text_label,
+            x_offset,                            
+            bar.get_y() + bar.get_height() / 2,  
+            label,
             va='center',
             ha='left',
             color='white',
@@ -204,18 +223,19 @@ def plot_race_ranking(session):
             fontweight='bold'
         )
 
-    ax.set_xlabel("Delta Time to Fastest Lap (s)")
-    ax.set_ylabel("Driver")
-    ax.invert_yaxis() # Put the fastest driver at the top
+    ax.set_xlabel("Gap to Winner (s)")
+    ax.set_ylabel("Driver (Final Classification)")
+    ax.invert_yaxis() # Put the winner at the top
     ax.grid(True, linestyle="--", alpha=0.5)
     
     # Pad the right x-axis limit so the text doesn't get clipped
-    ax.set_xlim(right=max(delta_time) * 1.1)
+    max_delta = max(delta_times) if len(delta_times) > 0 else 0
+    ax.set_xlim(right=max_delta * 1.15 if max_delta > 0 else 10)
 
     plt.suptitle(
-        f"Race Fastest Laps Ranking\n"
+        f"Final Race Ranking\n"
         f"{session.event['EventName']} {session.event.year} {session.name}\n"
-        f"Overall Fastest Lap: {best_driver} {formatted_time}\n",
+        f"Fastest Lap: {best_driver} {formatted_time}\n",
         fontsize=14
     )
 
