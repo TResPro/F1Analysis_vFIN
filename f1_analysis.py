@@ -243,11 +243,32 @@ def plot_session_ranking(session):
     colors = [TEAM_COLORS.get(team, "gray") for team in teams]
 
     # Plotting
-    ax.barh(drivers, delta_time, color=colors)
+    bars = ax.barh(drivers, delta_time, color=colors)
+    
+    # --- NEW: Add delta text next to each bar ---
+    for bar, delta in zip(bars, delta_time):
+        # Format the text: 'Pole' for the fastest, '+X.XXXs' for the rest
+        text_label = f"+{delta:.3f}s" if delta > 0 else "Pole"
+        
+        ax.text(
+            bar.get_width() + 0.05,              # Slightly to the right of the bar
+            bar.get_y() + bar.get_height() / 2,  # Centered vertically on the bar
+            text_label,
+            va='center',
+            ha='left',
+            color='white',
+            fontsize=10,
+            fontweight='bold'
+        )
+    # --------------------------------------------
+
     ax.set_xlabel("Delta Time to Pole (s)")
     ax.set_ylabel("Driver")
     ax.invert_yaxis() # Put the fastest driver at the top
     ax.grid(True, linestyle="--", alpha=0.5)
+    
+    # Pad the right x-axis limit so the text doesn't get clipped
+    ax.set_xlim(right=max(delta_time) * 1.1)
 
     plt.suptitle(
         f"Qualifying Session Ranking\n"
