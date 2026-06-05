@@ -54,6 +54,9 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_SQ')
 
             elif session_type == "Race":
+                fig = f1_analysis.plot_free_practice_ranking(session)
+                show_fig_with_download('⏱️ Practice Session Ranking', fig, 'session_ranking_R')
+
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_R')
 
@@ -61,6 +64,9 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_R')
 
             elif session_type == "Sprint Race":
+                fig = f1_analysis.plot_free_practice_ranking(session)
+                show_fig_with_download('⏱️ Practice Session Ranking', fig, 'session_ranking_SR')
+
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_SR')
 
@@ -68,6 +74,9 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_SR')
 
             elif session_type in ["FP1", "FP2", "FP3"]:
+                fig = f1_analysis.plot_free_practice_ranking(session)
+                show_fig_with_download('⏱️ Practice Session Ranking', fig, 'session_ranking_FP')
+
                 fig = f1_analysis.plot_best_laps(session)
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_FP')
 
