@@ -213,6 +213,53 @@ def plot_lap_time_distribution(session, team_colors):
 
 '''QUALIFYING PLOTS'''
 
+# Plot 0: Session Ranking (Drivers) with Delta Times
+def plot_session_ranking(session):
+    plt.style.use("dark_background") 
+
+    # Filter out in-laps or laps without a valid time
+    valid_laps = session.laps.dropna(subset=["LapTime"])
+    
+    # Pick fastest laps by driver
+    fastest_laps = valid_laps.loc[valid_laps.groupby("Driver")["LapTime"].idxmin()]
+    fastest_laps = fastest_laps.sort_values("LapTime")
+
+    drivers = fastest_laps["Driver"]
+    teams = fastest_laps["Team"]
+    delta_time = (fastest_laps["LapTime"] - fastest_laps["LapTime"].min()).dt.total_seconds()
+    
+    # Get best lap time and driver
+    best_lap_time = fastest_laps["LapTime"].min()
+    best_driver = fastest_laps.loc[fastest_laps["LapTime"].idxmin(), "Driver"]
+
+    # Format time to m:ss.sss
+    total_seconds = best_lap_time.total_seconds()
+    formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
+
+    # Create figure and axis
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
+
+    # Use team colors for the bars
+    colors = [TEAM_COLORS.get(team, "gray") for team in teams]
+
+    # Plotting
+    ax.barh(drivers, delta_time, color=colors)
+    ax.set_xlabel("Delta Time to Pole (s)")
+    ax.set_ylabel("Driver")
+    ax.invert_yaxis() # Put the fastest driver at the top
+    ax.grid(True, linestyle="--", alpha=0.5)
+
+    plt.suptitle(
+        f"Qualifying Session Ranking\n"
+        f"{session.event['EventName']} {session.event.year} {session.name}\n"
+        f"Pole Lap: {best_driver} {formatted_time}\n",
+        fontsize=14
+    )
+
+    plt.tight_layout()
+
+    return fig
+
 # Plot 1: Best Lap per Team in Qualifying
 def plot_best_laps(session):
     plt.style.use("dark_background") 

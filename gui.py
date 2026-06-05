@@ -18,6 +18,9 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
             st.toast("✅ Session loaded!", icon="📂")
 
             if session_type == "Qualifying":
+                fig = f1_analysis.plot_session_ranking(session)
+                show_fig_with_download('🏆 Session Ranking', fig, 'session_ranking_Q')
+
                 fig = f1_analysis.plot_best_laps(session)
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_Q')
 
@@ -133,7 +136,7 @@ def run_streamlit_app():
 
         with col1:
             mode = st.selectbox("Select Mode:", ["Grand Prix"], index=0)
-            year = st.selectbox("Select Year", ["2026","2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"])
+            year = st.selectbox("Select Year", ["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"])
             session_type = st.selectbox("Select Session", ["FP1", "FP2", "FP3", "Sprint Qualifying", "Qualifying", "Sprint Race","Race"])
 
         with col2:
