@@ -54,8 +54,8 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_SQ')
 
             elif session_type == "Race":
-                fig = f1_analysis.plot_free_practice_ranking(session)
-                show_fig_with_download('⏱️ Practice Session Ranking', fig, 'session_ranking_R')
+                fig = f1_analysis.plot_race_ranking(session)
+                show_fig_with_download('⏱️ Race Fastest Laps', fig, 'fastest_laps_ranking_R')
 
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_R')
@@ -64,8 +64,8 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_R')
 
             elif session_type == "Sprint Race":
-                fig = f1_analysis.plot_free_practice_ranking(session)
-                show_fig_with_download('⏱️ Practice Session Ranking', fig, 'session_ranking_SR')
+                fig = f1_analysis.plot_race_ranking(session)
+                show_fig_with_download('⏱️ Race Fastest Laps', fig, 'fastest_laps_ranking_SR')
 
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_SR')
@@ -148,7 +148,7 @@ def run_streamlit_app():
 
         with col1:
             mode = st.selectbox("Select Mode:", ["Grand Prix"], index=0)
-            year = st.selectbox("Select Year", ["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"])
+            year = st.selectbox("Select Year", ["2026","2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"])
             session_type = st.selectbox("Select Session", ["FP1", "FP2", "FP3", "Sprint Qualifying", "Qualifying", "Sprint Race","Race"])
 
         with col2:
