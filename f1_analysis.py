@@ -172,22 +172,33 @@ def plot_race_ranking_table(session):
     # 2) Get the race results and winner's time
     results = session.results.sort_values("Position")
     winner_time = results.iloc[0]["Time"]
+    winner_time_sec = winner_time.total_seconds() if pd.notna(winner_time) else 0
     
     # 3) Prepare data for the table
     columns = ["Position", "Driver", "Gap / Status"]
     cell_text = []
+    teams_list = [] # Store teams to apply colors later
 
     for _, row in results.iterrows():
         # Handle drivers who didn't classify (NaN positions)
         pos = str(int(row["Position"])) if pd.notna(row["Position"]) else "NC"
         driver = row["Abbreviation"]
+        teams_list.append(row["TeamName"])
         
-        # Determine gap or status
-        if pd.notna(row["Time"]):
-            delta_sec = (row["Time"] - winner_time).total_seconds()
-            if delta_sec == 0:
+        # Determine gap or status and fix the strange delta issue
+        if pd.notna(row["Time"]) and winner_time_sec > 0:
+            row_time_sec = row["Time"].total_seconds()
+            
+            if row["Position"] == 1:
                 status = "Winner"
             else:
+                # If the time is significantly smaller than the winner's total time, 
+                # it means the API already provided this value as a gap.
+                if row_time_sec < (winner_time_sec * 0.5):
+                    delta_sec = row_time_sec
+                else:
+                    delta_sec = row_time_sec - winner_time_sec
+                
                 status = f"+{delta_sec:.3f}s"
         else:
             # Lapped, DNF, DNS, etc.
@@ -197,9 +208,7 @@ def plot_race_ranking_table(session):
 
     # 4) Create figure and axis
     fig, ax = plt.subplots(figsize=(8, 10), dpi=1000)
-    
-    # Hide the axes completely for a clean table look
-    ax.axis("off") 
+    ax.axis("off") # Hide axes
 
     # 5) Create the table
     table = ax.table(
@@ -209,21 +218,28 @@ def plot_race_ranking_table(session):
         cellLoc="center"
     )
     
-    # 6) Style the table for dark mode
+    # 6) Style the table for dark mode and apply team colors to names
     table.auto_set_font_size(False)
     table.set_fontsize(12)
-    table.scale(1, 1.8) # Stretch the row heights slightly so it's readable
+    table.scale(1, 1.8) # Stretch rows slightly
 
-    for (row, col), cell in table.get_celld().items():
-        cell.set_edgecolor("#444444") # Dark gray borders
-        if row == 0:
+    for (row_idx, col_idx), cell in table.get_celld().items():
+        cell.set_edgecolor("#444444")
+        if row_idx == 0:
             # Header styling
             cell.set_facecolor("#333333")
             cell.set_text_props(weight="bold", color="white")
         else:
             # Data rows styling
             cell.set_facecolor("#111111")
-            cell.set_text_props(color="white")
+            
+            # Apply team color to the Driver column (index 1)
+            if col_idx == 1:
+                team_name = teams_list[row_idx - 1]
+                t_color = TEAM_COLORS.get(team_name, "white")
+                cell.set_text_props(weight="bold", color=t_color)
+            else:
+                cell.set_text_props(color="white")
 
     # Add the title with Fastest Lap info
     plt.suptitle(
