@@ -36,6 +36,9 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_Q')
 
             elif session_type == "Sprint Qualifying":
+                fig = f1_analysis.plot_session_ranking(session)
+                show_fig_with_download('⏱️ Session Ranking', fig, 'session_ranking_SQ')
+
                 fig = f1_analysis.plot_best_laps(session)
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_SQ')
 
