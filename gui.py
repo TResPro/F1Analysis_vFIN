@@ -54,8 +54,8 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('🚀 Max Speeds vs Lap Time', fig, 'max_speeds_vs_laptime_SQ')
 
             elif session_type == "Race":
-                fig = f1_analysis.plot_race_ranking(session)
-                show_fig_with_download('⏱️ Race Fastest Laps', fig, 'fastest_laps_ranking_R')
+                fig = f1_analysis.plot_race_ranking_table(session)
+                show_fig_with_download('📋 Final Race Classification', fig, 'final_race_classification_R')
 
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_R')
@@ -64,8 +64,8 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
                 show_fig_with_download('📊 Lap Time Distribution', fig, 'lap_time_distribution_R')
 
             elif session_type == "Sprint Race":
-                fig = f1_analysis.plot_race_ranking(session)
-                show_fig_with_download('⏱️ Race Fastest Laps', fig, 'fastest_laps_ranking_SR')
+                fig = f1_analysis.plot_race_ranking_table(session)
+                show_fig_with_download('📋 Final Race Classification', fig, 'final_race_classification_SR')
 
                 fig = f1_analysis.plot_stint_comparison(session, [driver1, driver2], TEAM_COLORS)
                 show_fig_with_download('🏁 Stint Comparison', fig, 'stint_comparison_SR')

@@ -157,7 +157,7 @@ def plot_free_practice_ranking(session):
     return fig
 
 # Plot: Race Fastest Laps Ranking (Drivers) with Delta Times
-def plot_race_ranking(session):
+def plot_race_ranking_table(session):
     plt.style.use("dark_background") 
 
     # 1) Get the overall fastest lap for the title
@@ -169,74 +169,69 @@ def plot_race_ranking(session):
     total_seconds = best_lap_time.total_seconds()
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
 
-    # 2) Get the race results (final classification)
+    # 2) Get the race results and winner's time
     results = session.results.sort_values("Position")
-    
-    # The winner is the first row after sorting by Position
     winner_time = results.iloc[0]["Time"]
     
-    drivers = []
-    teams = []
-    delta_times = []
-    text_labels = []
+    # 3) Prepare data for the table
+    columns = ["Position", "Driver", "Gap / Status"]
+    cell_text = []
 
     for _, row in results.iterrows():
-        drivers.append(row["Abbreviation"])
-        teams.append(row["TeamName"])
+        # Handle drivers who didn't classify (NaN positions)
+        pos = str(int(row["Position"])) if pd.notna(row["Position"]) else "NC"
+        driver = row["Abbreviation"]
         
-        # Check if driver has a valid total Time (meaning they finished on the lead lap)
+        # Determine gap or status
         if pd.notna(row["Time"]):
             delta_sec = (row["Time"] - winner_time).total_seconds()
-            delta_times.append(delta_sec)
-            
             if delta_sec == 0:
-                text_labels.append("Winner")
+                status = "Winner"
             else:
-                text_labels.append(f"+{delta_sec:.3f}s")
+                status = f"+{delta_sec:.3f}s"
         else:
-            # Lapped cars or DNFs do not have a total time we can subtract
-            delta_times.append(0.0) # Set bar length to 0
-            text_labels.append(str(row["Status"])) # Will show "+1 Lap", "DNF", etc.
+            # Lapped, DNF, DNS, etc.
+            status = str(row["Status"])
+            
+        cell_text.append([pos, driver, status])
 
-    # Create figure and axis
-    fig, ax = plt.subplots(figsize=(16, 9), dpi=1000)
-
-    # Use team colors for the bars
-    colors = [TEAM_COLORS.get(team, "gray") for team in teams]
-
-    # Plotting
-    bars = ax.barh(drivers, delta_times, color=colors)
+    # 4) Create figure and axis
+    fig, ax = plt.subplots(figsize=(8, 10), dpi=1000)
     
-    # Add delta text next to each bar
-    for bar, label, delta in zip(bars, text_labels, delta_times):
-        # Position the text just to the right of the bar (or near 0 for DNFs/lapped cars)
-        x_offset = bar.get_width() + 0.5 if delta > 0 else 0.5
-        
-        ax.text(
-            x_offset,                            
-            bar.get_y() + bar.get_height() / 2,  
-            label,
-            va='center',
-            ha='left',
-            color='white',
-            fontsize=10,
-            fontweight='bold'
-        )
+    # Hide the axes completely for a clean table look
+    ax.axis("off") 
 
-    ax.set_xlabel("Gap to Winner (s)")
-    ax.set_ylabel("Driver (Final Classification)")
-    ax.invert_yaxis() # Put the winner at the top
-    ax.grid(True, linestyle="--", alpha=0.5)
+    # 5) Create the table
+    table = ax.table(
+        cellText=cell_text,
+        colLabels=columns,
+        loc="center",
+        cellLoc="center"
+    )
     
-    # Pad the right x-axis limit so the text doesn't get clipped
-    max_delta = max(delta_times) if len(delta_times) > 0 else 0
-    ax.set_xlim(right=max_delta * 1.15 if max_delta > 0 else 10)
+    # 6) Style the table for dark mode
+    table.auto_set_font_size(False)
+    table.set_fontsize(12)
+    table.scale(1, 1.8) # Stretch the row heights slightly so it's readable
 
+    for (row, col), cell in table.get_celld().items():
+        cell.set_edgecolor("#444444") # Dark gray borders
+        if row == 0:
+            # Header styling
+            cell.set_facecolor("#333333")
+            cell.set_text_props(weight="bold", color="white")
+        else:
+            # Data rows styling
+            cell.set_facecolor("#111111")
+            cell.set_text_props(color="white")
+
+    # Add the title with Fastest Lap info
     plt.suptitle(
-        f"Final Race Ranking\n"
+        f"Final Race Classification\n"
         f"{session.event['EventName']} {session.event.year} {session.name}\n"
         f"Fastest Lap: {best_driver} {formatted_time}\n",
-        fontsize=14
+        fontsize=14,
+        y=0.95
     )
 
     plt.tight_layout()
