@@ -19,7 +19,7 @@ def on_load_session(mode, year, grand_prix, session_type, driver1, driver2):
 
             if session_type == "Qualifying":
                 fig = f1_analysis.plot_session_ranking(session)
-                show_fig_with_download('🏆 Session Ranking', fig, 'session_ranking_Q')
+                show_fig_with_download('⏱️ Session Ranking', fig, 'session_ranking_Q')
 
                 fig = f1_analysis.plot_best_laps(session)
                 show_fig_with_download('🏎️ Best Lap Per Team', fig, 'best_lap_per_team_Q')
