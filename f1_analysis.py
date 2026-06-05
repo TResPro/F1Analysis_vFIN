@@ -169,37 +169,44 @@ def plot_race_ranking_table(session):
     total_seconds = best_lap_time.total_seconds()
     formatted_time = f"{int(total_seconds // 60)}:{total_seconds % 60:06.3f}"  
 
-    # 2) Get the race results and winner's time
+    # 2) Get the race results
     results = session.results.sort_values("Position")
-    winner_time = results.iloc[0]["Time"]
+    
+    # Get winner explicitly
+    winner = results.loc[results["Position"] == 1].iloc[0]
+    winner_time = winner["Time"]
     winner_time_sec = winner_time.total_seconds() if pd.notna(winner_time) else 0
     
+    # Extract driver to team mapping directly from laps data. 
+    # This guarantees we use the exact team names your TEAM_COLORS dictionary expects.
+    driver_to_team = valid_laps.groupby("Driver")["Team"].first().to_dict()
+
     # 3) Prepare data for the table
     columns = ["Position", "Driver", "Gap / Status"]
     cell_text = []
-    teams_list = [] # Store teams to apply colors later
+    driver_list = [] 
 
     for _, row in results.iterrows():
-        # Handle drivers who didn't classify (NaN positions)
         pos = str(int(row["Position"])) if pd.notna(row["Position"]) else "NC"
         driver = row["Abbreviation"]
-        teams_list.append(row["TeamName"])
+        driver_list.append(driver)
         
-        # Determine gap or status and fix the strange delta issue
+        # Determine gap or status
         if pd.notna(row["Time"]) and winner_time_sec > 0:
             row_time_sec = row["Time"].total_seconds()
             
             if row["Position"] == 1:
                 status = "Winner"
             else:
-                # If the time is significantly smaller than the winner's total time, 
-                # it means the API already provided this value as a gap.
-                if row_time_sec < (winner_time_sec * 0.5):
-                    delta_sec = row_time_sec
-                else:
+                # Bulletproof check: If the difference is huge, it means the API already gave us the gap.
+                # If it's small (e.g. < 1000s), it gave us total race time and we must subtract the winner's time.
+                if abs(row_time_sec - winner_time_sec) < 1000:
                     delta_sec = row_time_sec - winner_time_sec
+                else:
+                    delta_sec = row_time_sec
                 
-                status = f"+{delta_sec:.3f}s"
+                # Use abs() to ensure no negative signs appear
+                status = f"+{abs(delta_sec):.3f}s"
         else:
             # Lapped, DNF, DNS, etc.
             status = str(row["Status"])
@@ -208,7 +215,7 @@ def plot_race_ranking_table(session):
 
     # 4) Create figure and axis
     fig, ax = plt.subplots(figsize=(8, 10), dpi=1000)
-    ax.axis("off") # Hide axes
+    ax.axis("off") 
 
     # 5) Create the table
     table = ax.table(
@@ -218,28 +225,34 @@ def plot_race_ranking_table(session):
         cellLoc="center"
     )
     
-    # 6) Style the table for dark mode and apply team colors to names
+    # 6) Style the table
     table.auto_set_font_size(False)
     table.set_fontsize(12)
-    table.scale(1, 1.8) # Stretch rows slightly
+    table.scale(1, 1.8)
 
     for (row_idx, col_idx), cell in table.get_celld().items():
         cell.set_edgecolor("#444444")
+        
         if row_idx == 0:
-            # Header styling
+            # Header Styling
             cell.set_facecolor("#333333")
-            cell.set_text_props(weight="bold", color="white")
+            cell.get_text().set_color("white")
+            cell.get_text().set_weight("bold")
         else:
-            # Data rows styling
+            # Data Rows Styling
             cell.set_facecolor("#111111")
             
-            # Apply team color to the Driver column (index 1)
+            # Target the Driver column specifically to apply team colors
             if col_idx == 1:
-                team_name = teams_list[row_idx - 1]
+                drv = driver_list[row_idx - 1]
+                team_name = driver_to_team.get(drv, "")
                 t_color = TEAM_COLORS.get(team_name, "white")
-                cell.set_text_props(weight="bold", color=t_color)
+                
+                # Apply the color forcefully to the text object
+                cell.get_text().set_color(t_color)
+                cell.get_text().set_weight("bold")
             else:
-                cell.set_text_props(color="white")
+                cell.get_text().set_color("white")
 
     # Add the title with Fastest Lap info
     plt.suptitle(
